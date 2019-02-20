@@ -12,7 +12,7 @@
   "test-depends" : [ ],
   "resources" : [ ],
   "provides"    : {
-    "Intl:BCP47"          : "lib/BCP47.pm6",
+    "Intl:BCP47"          : "lib/Intl/BCP47.pm6",
     "Intl:BCP47::Grammar" : "lib/Intl/BCP47/Grammar.pm6",
     "Intl:BCP47::Actions" : "lib/Intl/BCP47/Actions.pm6",
     "Intl:BCP47::Classes" : "lib/Intl/BCP47/Classes.pm6"
