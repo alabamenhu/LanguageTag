@@ -1,4 +1,3 @@
-use lib '../lib';
 use Intl::BCP47;
 use Test;
 
