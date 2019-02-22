@@ -5,11 +5,35 @@ A simple Perl 6 module for processing BCP-74 codes.
     use Intl::BCP47;
     my $tag = LanguageTag.new("oc-Latn-ES-aranes-t-en-UK");
 
-    say $tag.language.code;   # --> "oc"
-    say $tag.variant[0].code; # --> "aranese"
+    say $tag.language.code;   #  ↪︎ "oc"
+    say $tag.variant[0].code; #  ↪︎ "aranese"
 
-    my $not-pretty-tag = LanguageTag.new("eN-lATn-Us-u-ca-gregorian-t-es-MX");
-    say $not-pretty-tag.canonical; # --> "en-Latn-US-t-es-MX-u-ca-gregorian"
+    my $not-pretty-tag = LanguageTag.new("eN-lATn-Us-u-ca-gregory-t-es-MX");
+    say $not-pretty-tag.canonical; #  ↪︎ "en-Latn-US-t-es-MX-u-ca-gregory"
+
+You can also filter a set of codes by passing in a tag-like filter:
+
+    my @tags = (
+      LanguageTag.new('es-ES'),
+      LanguageTag.new('es-MX'),
+      LanguageTag.new('es-GQ'),
+      LanguageTag.new('pt-GQ'),
+    );
+
+    filter-language-tags: @tags, 'es';   #  ↪︎ [es-ES], [es-MX], [es-GQ]
+    filter-language-tags: @tags, '*-GQ'; #  ↪︎ [es-GQ], [pt-GQ]
+
+Or to check a single value, you can also smart match on a filter object:
+
+    my $filter = LanguageTagFilter('*-Latf'); # 'in Fraktur script'
+
+    LanguageTag.new('de-Latf-DE') ~~ $filter # ↪︎ True
+    LanguageTag.new('de-Latn-AU') ~~ $filter # ↪︎ False
+
+The filtering is based on RFC4647 and is what you might expect in a HTTP request
+header.  However, for the ambitious, the special LanguageTagFilter object
+provides for a good more flexibility and power than what you get from the basic
+new(Str).
 
 # Supported Standards
 
@@ -22,16 +46,15 @@ support for canonicalization, but that can be improved.
 
 Future versions will provide more robust error handling (with warnings for
 deprecated or undefined tags), support for irregular grandfathered tags, support
-for preferred forms of both standard and grandfathered tags, and, most
-importantly, matching (so that, given a list of language tags, you can find the
-language tag that most closely matches a given tag), and better documentation.
+for preferred forms of both standard and grandfathered tags, and better
+documentation.
 
 Additional support will later be given for handling the two defined extensions
 because at the moment, their canonical forms merely parrot back the source
 form (but placing -t before -u) without adjusting internal order or
 capitalization.
 
-Once additional elemnts of the CLDR are integrated into other Perl 6 modules,
+Once additional elements of the CLDR are integrated into other Perl 6 modules,
 then support may be added for more descriptive readouts of the tags (e.g.,
 saying
 

@@ -1,7 +1,7 @@
 {
   "perl"        : "6.*",
   "name"        : "Intl::BCP47",
-  "version"     : "0.8",
+  "version"     : "0.8.2",
   "api"         : 1,
   "description" : "A parser for language tags in accordance with BCP-47",
   "authors"     : ["Matthew ‘Matéu’ Stephen STUCKWISCH <mateu@softastur.com>"],

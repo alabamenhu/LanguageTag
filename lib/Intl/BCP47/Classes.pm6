@@ -1,7 +1,5 @@
-
-
 class Language is export {
-  my  @.known = <aa  aaa aab aac aad aae aaf aag aah aai aak aal aam aan aao aap
+  my  @.normal =<aa  aaa aab aac aad aae aaf aag aah aai aak aal aam aan aao aap
                  aaq aas aat aau aav aaw aax aaz ab  aba abb abc abd abe abf abg
                  abh abi abj abl abm abn abo abp abq abr abs abt abu abv abw abx
                  aby abz aca acb acd ace acf ach aci ack acl acm acn acp acq acr
@@ -521,7 +519,8 @@ class Language is export {
       when ?@.normal{$_}     { return 'normal'       }
       when ?@.special{$_}    { return 'special'      }
       when ?@.deprecated{$_} { return 'deprecated'   }
-      default                { return 'unregistered' }
+      when ''                { return 'wildcard'     } # ⬅︎ not canonical, used
+      default                { return 'unregistered' } #    only in filters!
     }
   }
 }
@@ -554,14 +553,14 @@ class Region is export {
   method canonical { $.code.uc }
   method type {
     given $.code {
-      when ?@.regular{$_}    { return 'normal'       }
-      when ?@.special{$_}    { return 'special'      }
-      when ?@.privateuse{$_} { return 'private use'  }
-      when ?@.macroreg{$_}   { return 'macro region' }
-      when ?@.unknown{$_}    { return 'unknown'      }
-      when ?@.deprecated{$_} { return 'deprecated'   }
-      when ''                { return 'undefined'    }
-      default                { return 'unregistered' }
+      when ?@.regular{$_}    { return 'normal'                 }
+      when ?@.special{$_}    { return 'special'                }
+      when ?@.privateuse{$_} { return 'private use'            }
+      when ?@.macroreg{$_}   { return 'macro region'           }
+      when ?@.unknown{$_}    { return 'unknown'                }
+      when ?@.deprecated{$_} { return 'deprecated'             }
+      when ''                { return 'wildcard' | 'undefined' } # ⬅︎ might not be the
+      default                { return 'unregistered'           } #    best approach
     }
   }
 
@@ -604,7 +603,6 @@ class Script {
       default                { return 'unregistered' }
     }
   }
-
 }
 
 
@@ -625,11 +623,12 @@ class Variant is export {
   has $.code is rw;
   multi method gist (Any:D:) { '[Variant:' ~ $.code ~ ']' }
   multi method gist (Any:U:) { '[Variant]'                }
-  method TWEAK { $.code = $.code.lc }
   method type {
     given $.code {
-      when ?@.regular{$_}    { return 'normal'       }
-      default                { return 'unregistered' }
+      when ?@.regular{$_} { return 'normal'                 }
+      when '*'            { return 'wildcard'               }
+      when ''             { return 'wildcard' | 'undefined' }
+      default             { return 'unregistered'           }
     }
   }
 }
@@ -637,6 +636,16 @@ class Variant is export {
 class Extension is export {
   has $.singleton is rw;
   has @.subtags is rw;
+  method new(:$singleton, :@subtags) {
+    # Uncomment out this code once the extensions are finished.
+    #given $singleton {
+    #  when 'u' { return UnicodeLocaleExtension.new: @subtags }
+    #  when 't' { return TransfordContentExtension.new: @subtags }
+    #  default  {
+      self.bless(:$singleton, :@subtags);
+    #  }
+    #}
+  }
   multi method gist (Any:D:) { '[Extension:' ~ $.singleton ~ ':' ~ @.subtags.join(',') ~ ']' }
   multi method gist (Any:U:) { '[Extension]' }
   method type {
@@ -648,16 +657,99 @@ class Extension is export {
   }
 }
 
-#class TransformedContentExtension is Extension is export {
-#  has LanguageTag $.source;
-#  has TransformedContentMechanisms @.mechanisms;
-#}
-#class UnicodeLocaleExtension is Extension is export {
-#  has UnicodeLocaleAttributes @.attributes;
-#}
+# SUBCLASSED EXTENSIONS:
+# These extensions are not yet finished, as they will require a susbtantially
+# amount of code to properly validate.  Enable at your own risk.
+class TransformedContentExtension is Extension is export {
+  #has LanguageTag $.source;
+  #has TransformedContentMechanisms @.mechanisms;
+
+  # Unless specified, to be canonical, each tag if present MUST be present in
+  # the validation arrays;
+  # Dates can be used, but must be the final subtag and will be in the format of
+  # YYYY, YYYYMM, or YYYYMMDD.
+
+  # used with tag m0,
+  my @mechanism = <alaloc bgn buckwalt din gost iso mcst mns satts ungegn cll
+                   css java percent perl plain unicode xml xml10 prprname>;
+  # used with tag d0
+  my @destination = <ascii accents publish casefold lower upper title digit
+                     hwidth hex nfc nfd nfkc nfkd fcd fcc charname npinyin
+                     null remove nawgyi>;
+  # used with tag s0
+  my @source = <accents ascii publish hex npinyin zawgyi>;
+  # used with tag i0
+  my @ime = <handwrit pinyin wubi und>;
+  # used with tag k0
+  my @keyboard = <osx windows chromeos android googlevk 101key 102key dvorak
+                  dvorak1 dvorakr el220 el319 extended isiri nutaaq legacy
+                  lt1205 lt1582 patta qwerty qwertz var viqr ta99 colemak
+                  600dpi azerty und>;
+  # used with tag t0
+  my @translator = <und>;
+  # used with tag h0, MUST include hybrid, represents two languages intermingled
+  my @hybrid = <hybrid>;
+
+
+  method new (@subtags) {
+    @subtags
+  }
+  method canonical {
+    '-t'
+  }
+}
+
+class UnicodeLocaleExtension is Extension is export {
+  #has UnicodeLocaleAttributes @.attributes;
+  # from http://www.unicode.org/repos/cldr/tags/latest/common/bcp47/calendar.xml
+  # could be automated with a compile phaser
+  # ca
+  my @calendar = <buddhist chinese coptic dangi ethioaa ethiopic gregory hebrew
+                  indian islamic islamic-umalqura islamic-tbla islamic-civil
+                  islamic-rgsa iso8601 japanese persian roc islamicc>;
+  # fw
+  my @first-day = <sun mon tue wed thu fri sat>;
+  # hc
+  my @hour-cycle = <h12 h23 h11 h24>;
+  # cf
+  my @cf = <standard account>;
+  # cu
+  my @cu = < FOO >;
+
+  has $.calendar;
+
+  method new(@subtags) {
+
+  }
+  method canonical {
+    '-u'
+  }
+}
 
 class PrivateUse is export {
   has $.code is rw;
   multi method gist (Any:D:) { '[PrivateUse:' ~ $.code ~ ']' }
   multi method gist (Any:U:) { '[PrivateUse]' }
+}
+
+role Wildcard {;}
+class WildcardLanguage is Language does Wildcard is export {
+  has Str $.code = '*';
+  method gist { '[Language:*]' }
+  method type { 'wildcard'   }
+}
+class WildcardScript is Script does Wildcard is export {
+  has Str $.code = '*';
+  method gist { '[Script:*]' }
+  method type { 'wildcard'   }
+}
+class WildcardRegion is Region does Wildcard is export {
+  has $.code = "*" ;
+  method gist { '[Region:*]' }
+  method type { 'wildcard'    }
+}
+class WildcardVariant is Variant does Wildcard is export {
+  has $.code = "*" ;
+  method gist { '[Variant:*]' }
+  method type { 'wildcard'    }
 }

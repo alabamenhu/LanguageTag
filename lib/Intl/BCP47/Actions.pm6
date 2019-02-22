@@ -19,7 +19,7 @@ method langtag ($/) {
     :@variants,
     :@extensions,
     :@privateuses
-  );
+  )
 }
 
 method language      ($/)  { make   Language.new(:code($/.Str)) }
