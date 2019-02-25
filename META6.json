@@ -16,7 +16,7 @@
     "Intl::BCP47::Grammar"        : "lib/Intl/BCP47/Grammar.pm6",
     "Intl::BCP47::Actions"        : "lib/Intl/BCP47/Actions.pm6",
     "Intl::BCP47::Classes"        : "lib/Intl/BCP47/Classes.pm6",
-    "Intl::BCP47::Filter-Actions" : "lib/Intl/BCP47/Actions.pm6",
+    "Intl::BCP47::Filter-Actions" : "lib/Intl/BCP47/Filter-Actions.pm6",
     "Intl::BCP47::FilterGrammar"  : "lib/Intl/BCP47/Classes.pm6"
   },
   "tags"          : [
