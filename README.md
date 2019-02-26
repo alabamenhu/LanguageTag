@@ -16,7 +16,7 @@ You can also filter a set of codes by passing in a tag-like filter:
     my @tags = (
       LanguageTag.new('es-ES'),
       LanguageTag.new('es-MX'),
-      LanguageTag.new('es-GQ'),
+      LanguageTag.new('es-Latn-GQ'),
       LanguageTag.new('pt-GQ'),
     );
 
@@ -33,11 +33,18 @@ Or to check a single value, you can also smart match on a filter object:
 The filtering is based on RFC4647 and is what you might expect in a HTTP request
 header.  However, for the ambitious, the special LanguageTagFilter object
 provides for a good more flexibility and power than what you get from the basic
-new(Str).
+`.new(Str)`.
 
 # Supported Standards
 
-Intl::BCP47 implements BCP47, which defines the structure of language tags.
+Intl::BCP47 implements [BCP47](https://tools.ietf.org/html/bcp47), which defines
+the structure of language tags. It also implements
+[RFC4647](https://tools.ietf.org/html/rfc4647), which defines the nature of
+filtering and matching language tags.
+
+Prelimary support has been added for the implementations of RFC6067 and RFC6497
+(the Unicode Extensions for BCP 47, for subtags beginning with the singletons
+`-u` and `-t`).
 
 # To do
 
@@ -72,3 +79,11 @@ All files (unless noted otherwise) can be used, modified and redistributed
 under the terms of the Artistic License Version 2. Examples (in the
 documentation, in tests or distributed as separate files) can be considered
 public domain.
+
+## “Unless noted otherwise”
+
+The resources file “language-subtag-registry” is comes from [IANA](https://www.iana.org/assignments/language-subtag-registry).  I do not
+currently distribute it because I am not aware of its exact license.  If it is
+available in a permissive license, please let me know and I will distribute
+a copy.  In the meantime, I will include a parsed and reduced version that holds
+only the necessary data in a more quickly parseable format.  

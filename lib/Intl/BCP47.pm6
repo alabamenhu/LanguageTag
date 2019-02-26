@@ -32,8 +32,8 @@ class LanguageTag is export {
   multi method gist (::?CLASS:D:) {
     '['
     ~ $.language.code
-    ~ ('-' ~ $.script.code unless $.script.type eq 'undefined')
-    ~ ('-' ~ $.region.code unless $.region.type eq 'undefined')
+    ~ ('-' ~ $.script.code unless $.script.type eq 'blank')
+    ~ ('-' ~ $.region.code unless $.region.type eq 'blank')
     ~ ('…' if ?@.extensions || ?@.variants || ?@.privateuses)
     ~ ']'
   }
@@ -43,8 +43,8 @@ class LanguageTag is export {
   # some cases.
   method Str {
     $.language.code
-    ~ ('-' ~ $.script.code unless $.script.type eq 'undefined')
-    ~ ('-' ~ $.region.code unless $.region.type eq 'undefined')
+    ~ ('-' ~ $.script.code unless $.script.type eq 'blank')
+    ~ ('-' ~ $.region.code unless $.region.type eq 'blank')
     ~ @.variants.map('-' ~ *.code.lc).join
     ~ @.extensions.map({'-' ~ $_.singleton ~ '-' ~ $_.subtags.join('-')}).join
     ~ ('-x' if @.privateuses)
@@ -57,9 +57,9 @@ class LanguageTag is export {
     # For now, extensions are alphabetized by singleton, with all subtags passed
     # through as is.
     $.language.canonical
-    ~ ('-' ~ $.script.canonical unless $.script.type eq 'undefined')
-    ~ ('-' ~ $.region.canonical unless $.region.type eq 'undefined')
-    ~ @.variants.map('-' ~ *.code.lc).sort.join
+    ~ ('-' ~ $.script.canonical unless $.script.type eq 'blank')
+    ~ ('-' ~ $.region.canonical unless $.region.type eq 'blank')
+    ~ @.variants.map('-' ~ *.canonical).sort.join
     ~ @.extensions.sort(*.singleton).map({'-' ~ $_.singleton ~ '-' ~ $_.subtags.join('-')}).join
     ~ ('-x' if @.privateuses)
     ~ @.privateuses.map('-' ~ *.code).join; # don't sort privateuses
@@ -91,8 +91,8 @@ class LanguageTagFilter is export {
     my %base = BCP47-Filter-Grammar.parse($string, :actions(BCP47-Filter-Actions)).made;
     LanguageTagFilter.new(
       :language(%base<language>),
-      :script(%base<script>  // WildcardScript.new),
-      :region(%base<region>  // WildcardRegion.new),
+      :script(  %base<script> // WildcardScript.new),
+      :region(  %base<region> // WildcardRegion.new),
       :variants(%base<variants><>),
     )
   }
@@ -105,9 +105,9 @@ class LanguageTagFilter is export {
     # Privateuse and extensions are not used in filtering.
   ) {
     push @languages,  $language  if $language.defined;
-    push @regions,    $region    if $region.defined   && $region.type  ne "undefined";
-    push @scripts,    $script    if $script.defined   && $script.type  ne "undefined";
-    push @variants,   $variant   if $variant.defined  && $variant.type ne "undefined";
+    push @regions,    $region    if $region.defined   && $region.type  ne "blank";
+    push @scripts,    $script    if $script.defined   && $script.type  ne "blank";
+    push @variants,   $variant   if $variant.defined  && $variant.type ne "blank";
 
     # If any field is empty per RFC4647, it is considered a wildcard. Similarly
     # at least for languages/scripts/regions, any wildcard passed will
@@ -242,6 +242,23 @@ sub filter-language-tags-extended(
       take $source-tag if (
         $source-tag ~~ @filter.any
       )
+    }
+  }
+}
+
+#
+# Implements RFC4647 § 3.4 Lookup
+sub lookup-language-tag(@available, @preferences --> LanguageTag) {
+  # The basic process is to progressively reduce the tags
+  #
+  #
+}
+
+sub ordered-system-languages {
+  do given %*DISTRO {
+    when /macosx/ {
+      my $p = run 'defaults', 'read', '-g', 'AppleLanguages', :out;
+      ($p.out.slurp: :close).comb: /<[a..zA..Z0..9*-]>+/;
     }
   }
 }

@@ -24,4 +24,4 @@ nok BCP47-Grammar.parse('en-Latn-us-u-ca-gregorian'); # gregorian does not
 #ok BCP47-Grammar.parse('en-ukoed');
 #ok BCP47-Grammar.parse('en-ukoed-t-es-ES');
 
-done-testing()
+done-testing();

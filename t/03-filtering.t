@@ -1,6 +1,7 @@
 use Intl::BCP47;
 use Test;
 use Intl::BCP47::Filter-Grammar;
+
                      # should match filters A B C D E F
 my @tags-init = ('de-DE',                #  a b c
                  'de-de',                #  a b
@@ -25,7 +26,8 @@ ok my $filter-e = LanguageTagFilter.new('*-Deva');
 # my $filter-f = LanguageTagFilter.new('*-1996');
 # ok LanguageTagFilter.new('*-1996');
 
-# These should not match and in fact should die.
+
+# These should not make valid filters and die.
 dies-ok {LanguageTagFilter.new('Latn')};
 dies-ok {LanguageTagFilter.new('de-DE-x-goethe')};
 

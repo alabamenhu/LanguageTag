@@ -1,3 +1,4 @@
+######################
 # OS generated files #
 ######################
 .DS_Store
@@ -7,6 +8,13 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-# precompiled files
+######################
+# Perl 6 precompiled #
+######################
 .precomp
 lib/.precomp
+#######################################################################
+# Ignore the following because file license is unclear.  Available at #
+# https://www.iana.org/assignments/language-subtag-registry           #
+#######################################################################
+resources/language-subtag-registry
