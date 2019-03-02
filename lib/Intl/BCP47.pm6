@@ -51,9 +51,9 @@ class LanguageTag is export {
     ~ @.privateuses.map('-' ~ *.code).join; # don't sort privateuses
   }
   method canonical (Any:D:) {
-    # Warning: extensions do not currently handle canonical forms (they are
+    # Warning: the T extension does not currently handle canonical forms (it is
     # more complex, but will eventually be supported in the .canonical method
-    # once the two defined types are subclassed (singletons -u and -t).
+    # once it is fully subclassed).
     # For now, extensions are alphabetized by singleton, with all subtags passed
     # through as is.
     $.language.canonical
@@ -75,6 +75,28 @@ class LanguageTag is export {
       #:@.privateuses,
     )
   }
+}
+
+class GrandfatheredLanguageTag is LanguageTag {
+  # These can be guaranteed because BCP 47 only allows for these grandfathered
+  # tags.  No others are allowed or will be added.
+  #
+  has IrregularLanguage $.language;
+  has
+  has LanguageTag $.preferred;
+
+  method new (Str $text) {
+    my $preferred;
+    given $text {
+      when 'en-GB-oed' {
+        $preferred = LanguageTag.new()
+      }
+    }
+  }
+  method type {
+    ('ir' unless $regular) ~ 'regular'
+  }
+
 }
 
 

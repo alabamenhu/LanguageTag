@@ -44,7 +44,7 @@ class Region is export {
   # discriminate them.
   method type {
     given $.code {
-      when %regions{$_}:exists            { return 'normal'       }
+      when %regions{$_}:exists            { return 'regular'      }
       when %deprecated-regions{$_}:exists { return 'deprecated'   }
       when ''                             { return 'blank'        }
       default                             { return 'unregistered' }
@@ -87,8 +87,8 @@ class Variant is export {
 
   has $.code is rw;
 
-  multi method gist (Any:D:) { '[Variant:' ~ $.code ~ ']' }
-  multi method gist (Any:U:) { '[Variant]'                }
+  multi method gist (::?CLASS:D:) { '[Variant:' ~ $.code ~ ']' }
+  multi method gist (::?CLASS:U:) { '[Variant]'                }
 
   method canonical { $.code.lc }
 
@@ -105,24 +105,22 @@ class Variant is export {
 class Extension is export {
   has $.singleton is rw;
   has @.subtags is rw;
-  method new(:$singleton, :@subtags) {
+  multi method new(:$singleton, :@subtags) {
     # Uncomment out this code once the extensions are finished.
-    #given $singleton {
-    #  when 'u' { return UnicodeLocaleExtension.new: @subtags }
+    given $singleton {
+      # This elegant solution of ::('Class') for cyclic dependencies is thanks
+      # to #perl6 user vrurg.  Placing it in CHECK means it might
+      when 'u' { (CHECK ::('UnicodeLocaleExtension')).new: @subtags }
     #  when 't' { return TransfordContentExtension.new: @subtags }
-    #  default  {
-      self.bless(:$singleton, :@subtags);
-    #  }
-    #}
-  }
-  multi method gist (Any:D:) { '[Extension:' ~ $.singleton ~ ':' ~ @.subtags.join(',') ~ ']' }
-  multi method gist (Any:U:) { '[Extension]' }
-  method type {
-    given $.singleton {
-      when 't' { return 'transformed-content' }
-      when 'u' { return 'unicode-locale'      }
-      default  { return 'unregistered'        }
+      default  {
+        self.bless(:$singleton, :@subtags);
+      }
     }
+  }
+  multi method gist (::?CLASS:D:) { '[Extension:' ~ $.singleton ~ ':' ~ @.subtags.join(',') ~ ']' }
+  multi method gist (::?CLASS:U:) { '[Extension]' }
+  method type {
+    'unregistered'
   }
 }
 
@@ -168,31 +166,77 @@ class TransformedContentExtension is Extension is export {
   }
 }
 
-class UnicodeLocaleExtension is Extension is export {
-  #has UnicodeLocaleAttributes @.attributes;
-  # from http://www.unicode.org/repos/cldr/tags/latest/common/bcp47/calendar.xml
-  # could be automated with a compile phaser
-  # ca
-  my @calendar = <buddhist chinese coptic dangi ethioaa ethiopic gregory hebrew
-                  indian islamic islamic-umalqura islamic-tbla islamic-civil
-                  islamic-rgsa iso8601 japanese persian roc islamicc>;
-  # fw
-  my @first-day = <sun mon tue wed thu fri sat>;
-  # hc
-  my @hour-cycle = <h12 h23 h11 h24>;
-  # cf
-  my @cf = <standard account>;
-  # cu
-  my @cu = < FOO >;
+class UnicodeLocaleExtension is Extension does Associative is export {
+  # This class requires foreknowledge of the overall language tag to verify
+  # its validity and canonicity.  As such, for the region keys, we (at the
+  # moment) only check for well-formedness.
 
-  has $.calendar;
-
-  method new(@subtags) {
-
+  use Intl::BCP47::Extension-Registry :u;
+  has $.singleton = 'u'; # fallback to be extension agnostic
+  has @.subtags   = ();  # fallback for all keys/types in order, to be extension agonistic
+  has @.keys      = ();  # array to maintain input order, canonical is alphabetical
+  class Key {
+    has $.id;
+    has @.types = (); # not all keys allow for multiple types.
+    multi method gist (::?CLASS:D:) { '[' ~ $.id ~ ':' ~ @.types.join(',') ~ ']' }
+    multi method gist (::?CLASS:U:) { '[Key]' }
   }
+  proto new (|) {*}
+  multi method new(Str $text) {
+    samewith $text.substr((2 if $text.starts-with: 'u-')).split('-', :skip-empty);
+  }
+  multi method new(@subtags) {
+    my @keys = ();
+    for @subtags -> $tag {
+      if $tag.chars == 2 {
+          push @keys, Key.new(:id($tag));
+      }else{
+        push @keys.tail.types, $tag;
+      }
+    }
+    self.bless(:@subtags, :@keys)
+  }
+  multi method gist (::?CLASS:D:) { '[Extension|U:' ~ @.subtags.join(',') ~ ']' }
+  multi method gist (::?CLASS:U:) { '[Extension|U]' }
   method canonical {
-    '-u'
+    '-u' ~ @.keys.sort(*.id).map({'-' ~ .id ~ '-' ~ .types.join('-')})
   }
+
+  method check-valid {
+    for @.keys -> $key {
+      given $key.id {
+        when 'ca' { # CA ('calendar') allows for two tags, which are stored merged ATM
+          return False unless $key.types.join ∈ %u-data<ca>;
+        }
+        default {
+          return False unless $key.types == 1; # all keys other than CA have one
+                                               # (and only) one type tag.
+          return False unless $key.types.head ∈ %u-data{$key};
+        }
+      }
+    }
+    True;
+  }
+
+  ########## ASSOCIATIVE ROLE METHODS ##########
+  multi method AT-KEY (::?CLASS:D: $key) {
+    return-rw @.keys.grep(*.id eq $key).head;
+  }
+  multi method EXISTS-KEY (::?CLASS:D: $key) {
+    return-rw ?(@.keys.grep(*.id eq $key).elems)
+  }
+  multi method DELETE-KEY (::?CLASS:D: $key) {
+    my $return = @.keys.grep(*.id eq $key).head;
+    @.keys = @.keys.grep(*.id ne $key);
+    $return;
+  }
+  multi method ASSIGN-KEY (::?CLASS:D: $key, Str @vals) {
+    push @.keys, Key.new(:id($key), :types(@vals));
+  }
+  multi method ASSIGN-KEY (::?CLASS:D: $key, Key $val where {$val.id eq $key}) {
+    push @.keys, $val;
+  }
+
 }
 
 class PrivateUse is export {
@@ -201,24 +245,26 @@ class PrivateUse is export {
   multi method gist (Any:U:) { '[PrivateUse]' }
 }
 
-role Wildcard {;}
+
+########################################
+# Wildcard role to smart match cleaner #
+########################################
+role Wildcard {
+  method type { 'wildcard' }
+}
 class WildcardLanguage is Language does Wildcard is export {
   has Str $.code = '*';
   method gist { '[Language:*]' }
-  method type { 'wildcard'   }
 }
 class WildcardScript is Script does Wildcard is export {
   has Str $.code = '*';
   method gist { '[Script:*]' }
-  method type { 'wildcard'   }
 }
 class WildcardRegion is Region does Wildcard is export {
   has $.code = "*" ;
   method gist { '[Region:*]' }
-  method type { 'wildcard'    }
 }
 class WildcardVariant is Variant does Wildcard is export {
   has $.code = "*" ;
   method gist { '[Variant:*]' }
-  method type { 'wildcard'    }
 }

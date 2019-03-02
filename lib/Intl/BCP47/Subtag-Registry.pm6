@@ -1,6 +1,6 @@
 unit module Subtag-Registry;
 
-our %languages is export(:languages) = INIT {
+our %languages is export(:languages) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
   for @entries -> $entry {
@@ -17,7 +17,7 @@ our %languages is export(:languages) = INIT {
   %data;
 }
 
-our %deprecated-languages is export(:languages) = INIT {
+our %deprecated-languages is export(:languages) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
   for @entries -> $entry {
@@ -33,7 +33,7 @@ our %deprecated-languages is export(:languages) = INIT {
   %data;
 }
 
-our %regions is export(:regions) = INIT {
+our %regions is export(:regions) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<regions.bcp47data>.slurp.lines;
   for @entries -> $entry {
@@ -47,7 +47,7 @@ our %regions is export(:regions) = INIT {
   %data;
 }
 
-our %deprecated-regions is export(:regions) = INIT {
+our %deprecated-regions is export(:regions) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<regions.bcp47data>.slurp.lines;
   for @entries -> $entry {
@@ -61,7 +61,7 @@ our %deprecated-regions is export(:regions) = INIT {
   %data;
 }
 
-our %scripts is export(:scripts) = INIT {
+our %scripts is export(:scripts) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<scripts.bcp47data>.slurp.lines;
   for @entries -> $entry {
@@ -73,7 +73,7 @@ our %scripts is export(:scripts) = INIT {
   %data;
 }
 
-our %variants is export(:variants) = INIT {
+our %variants is export(:variants) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<variants.bcp47data>.slurp.lines;
   for @entries -> $entry {
@@ -88,7 +88,7 @@ our %variants is export(:variants) = INIT {
   %data;
 }
 
-our %deprecated-variants is export(:variants) = INIT {
+our %deprecated-variants is export(:variants) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<variants.bcp47data>.slurp.lines;
   for @entries -> $entry {

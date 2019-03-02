@@ -20,28 +20,27 @@ token TOP (:$*filter = False){
 
 token alpha     {     <[a..zA..Z]>      }
 token digit     {       <[0..9]>        }
-token alphanum  { <alpha>   |   <digit> }
+token alphanum  {   <[a..zA..Z0..9]>    }
 token singleton { <[a..zA..Z0..9]-[xX]> }
 token wildcard  {          '*'          }
 
 token langtag {
-  <language>
-  [ '-' <script>     ]?
-  [ '-' <region>     ]?
-  [ '-' <variant>    ]*
-  [ '-' <extension>  ]* # These will match, but they will cause a failure.
-  [ '-' <privateuse> ]* # Failure is called in Filter-Actions.pm6
+    <language>   [$||'-']    # ⬅︎ only obligatory element
+  [ <script>     [$||'-'] ]?
+  [ <region>     [$||'-'] ]?
+  [ <variant>    [$||'-'] ]*
+  [ <extension>  [$||'-'] ]* # ⬅︎ These will match, but they will cause a failure.
+  [ <privateuse>          ]* # ⬅︎ Failure is called in Filter-Actions.pm6
 }
 
 token language {
-  || [ <alpha> ** 2..3 ['-' <extlang>]?]  # ISO 639 + optional extended subtag
-  || <alpha> ** 4                         # reserved for future use
-  || <alpha> ** 5..8                      # registered language subtag
+  || <alpha> ** 2..3 <extlang>   # ISO 639 + optional extended subtag
+  || <alpha> ** 4                # reserved for future use
+  || <alpha> ** 5..8             # registered language subtag
   || <wildcard>
 }
 token extlang {
-  <alpha> ** 3
-  ['-' <alpha> ** 3] 0 ** 2
+  [ '-' <alpha> ** 3 <?after $||'-'> ] ** 0..3
 }
 token script {
   || <alpha> ** 4

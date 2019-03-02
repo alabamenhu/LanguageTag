@@ -14,12 +14,12 @@
 
 my $registry = slurp "language-subtag-registry";
 my @records = $registry.split(/\%\%\n/);
-my $languages-file     = open "languages.bcp47data",    :w;
-my $extlangs-file      = open "extlangs.bcp47data",     :w;
-my $scripts-file       = open "scripts.bcp47data",      :w;
-my $regions-file       = open "regions.bcp47data",      :w;
-my $variants-file      = open "variants.bcp47data",     :w;
-my $redundancies-file  = open "redundancies.bcp47data", :w;
+my $languages-file     = open "languages.bcp47data",     :w;
+my $extlangs-file      = open "extlangs.bcp47data",      :w;
+my $scripts-file       = open "scripts.bcp47data",       :w;
+my $regions-file       = open "regions.bcp47data",       :w;
+my $variants-file      = open "variants.bcp47data",      :w;
+my $redundancies-file  = open "redundancies.bcp47data",  :w;
 my $grandfathered-file = open "grandfathered.bcp47data", :w;
 
 

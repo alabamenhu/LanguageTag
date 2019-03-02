@@ -82,6 +82,10 @@ public domain.
 
 ## “Unless noted otherwise”
 
+The resources directory "cldr" contains the contents of the "bcp47" folder
+of the Unicode CLDR data.  These files are copyrighted by Unicode, Inc., and
+are available and distributed in accordance with [their terms](http://www.unicode.org/copyright.html).
+
 The resources file “language-subtag-registry” is comes from [IANA](https://www.iana.org/assignments/language-subtag-registry).  I do not
 currently distribute it because I am not aware of its exact license.  If it is
 available in a permissive license, please let me know and I will distribute

@@ -19,9 +19,9 @@ nok BCP47-Grammar.parse('en-Latn-us-u-ca-gregorian'); # gregorian does not
 
 # However, for some reason, when there is no regional tag, the variants don't
 # get picked up.  Not sure the best way to solve this.
-#ok BCP47-Grammar.parse('en-Latn-ukoed');
-#ok BCP47-Grammar.parse('en-Latn-ukoed-t-es-ES');
-#ok BCP47-Grammar.parse('en-ukoed');
-#ok BCP47-Grammar.parse('en-ukoed-t-es-ES');
+ok BCP47-Grammar.parse('en-Latn-ukoed');
+ok BCP47-Grammar.parse('en-Latn-ukoed-t-es-ES');
+ok BCP47-Grammar.parse('en-ukoed');
+ok BCP47-Grammar.parse('en-ukoed-t-es-ES');
 
 done-testing();
