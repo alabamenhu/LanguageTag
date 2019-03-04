@@ -27,8 +27,10 @@ my $grandfathered-file = open "grandfathered.bcp47data", :w;
 for @records -> $record {
   $record ~~ / 'Type: ' (\S+)/;
   my $type = $0 ?? $0.Str !! '';
-  $record ~~ / 'Subtag: ' (\S+)/;  # Currently allows a range syntax
-  my $code = $0 ?? $0.Str !! '';   # which this script doesn't handle
+  $record ~~ / 'Subtag: ' (\S+)/;
+  my $code = $0 ?? $0.Str !! '';
+  $record ~~ / 'Tag: ' (\S+)/;
+  my $tag = $0 ?? $0.Str !! '';
 
   $record ~~ / 'Suppress-Script: '(\S+)/;
   my $script = $0 ?? $0.Str !! '';
@@ -65,10 +67,10 @@ for @records -> $record {
         $variants-file.say: "$code,$prefix,$preferred" ~ ( '!' if $deprecated);
       }
       when 'redundant' {
-        $redundancies-file.say: "$code,$preferred" ~ ( '!' if $deprecated)
+        $redundancies-file.say: "$tag,$preferred" ~ ( '!' if $deprecated)
       }
       when 'grandfathered' {
-        $grandfathered-file.say: "$code,$preferred" ~ ( '!' if $deprecated);
+        $grandfathered-file.say: "$tag,$preferred" ~ ( '!' if $deprecated);
       }
       default  {
         # The only record not processed should contain the date.

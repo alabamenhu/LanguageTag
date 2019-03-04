@@ -89,3 +89,27 @@ close $file;
 ################################################################
 
 %data = ();
+my $transform = open-xml('cldr/transform.xml');
+%data<m0> = elems-for-tag($transform, 'm0'); # strict
+
+my $destination = open-xml('cldr/transform-destination.xml');
+%data<d0> = elems-for-tag($destination, 'd0'); # strict
+%data<s0> = elems-for-tag($destination, 's0'); # strict
+
+my $mt = open-xml('cldr/transform_mt.xml');
+%data<t0> = elems-for-tag($mt, 't0'); # und or anything?
+
+my $keyboard = open-xml('cldr/transform_keyboard.xml');
+%data<k0> = elems-for-tag($keyboard, 'k0'); # anything, vendor first preferred
+
+my $hybrid = open-xml('cldr/transform_hybrid.xml');
+%data<h0> = elems-for-tag($hybrid, 'h0'); # 'hybrid' + language stuff
+
+my $input = open-xml('cldr/transform_ime.xml');
+%data<i0> = elems-for-tag($input, 'i0'); # anything, vendor first preferred
+
+
+
+$file = open "extension-t.bcp47data", :w;
+$file.say(.key ~ ':' ~ .value.keys.join(',')) for %data;
+close $file;

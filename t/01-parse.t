@@ -23,5 +23,6 @@ ok BCP47-Grammar.parse('en-Latn-ukoed');
 ok BCP47-Grammar.parse('en-Latn-ukoed-t-es-ES');
 ok BCP47-Grammar.parse('en-ukoed');
 ok BCP47-Grammar.parse('en-ukoed-t-es-ES');
+# test with EN-ShAw-cA-newFoUnD-u-ca-gregory-t-he-Arab-ES-1800-x-foo
 
 done-testing();

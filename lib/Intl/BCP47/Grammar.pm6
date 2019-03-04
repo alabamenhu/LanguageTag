@@ -18,7 +18,7 @@ token langtag {
   [ <region>     [$||'-'] ]?
   [ <variant>    [$||'-'] ]*
   [ <extension>  [$||'-'] ]*
-  [ <privateuse> [$||'-'] ]?
+  [ <privateuse>          ]?
 }
 
 token language {

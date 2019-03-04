@@ -33,6 +33,34 @@ our %deprecated-languages is export(:languages) = BEGIN {
   %data;
 }
 
+our %grandfathered-languages is export(:old-languages) = BEGIN {
+  my %data = ();
+  my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
+  for @entries -> $entry {
+    $entry ~~ /
+     (<[a..zA..Z0..9-]>+) ','   # language tag
+     (<[a..zA..Z0..9-]>*)       # preferred tag
+     (  '!'?  )                 # is deprecated
+    /;
+    %data{$0.Str} = ($1.Str, $2.Str eq '!')
+  }
+  %data;
+}
+
+our %redundant-languages is export(:old-languages) = BEGIN {
+  my %data = ();
+  my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
+  for @entries -> $entry {
+    $entry ~~ /
+     (<[a..zA..Z0..9-]>+) ','   # language tag
+     (<[a..zA..Z0..9-]>*)       # preferred tag
+     (  '!'?  )                 # is deprecated
+    /;
+    %data{$0.Str} = ($1.Str, $2.Str eq '!')
+  }
+  %data;
+}
+
 our %regions is export(:regions) = BEGIN {
   my %data = ();
   my @entries = %?RESOURCES<regions.bcp47data>.slurp.lines;

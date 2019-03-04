@@ -44,7 +44,8 @@ filtering and matching language tags.
 
 Prelimary support has been added for the implementations of RFC6067 and RFC6497
 (the Unicode Extensions for BCP 47, for subtags beginning with the singletons
-`-u` and `-t`).
+`-u` and `-t`).  There is still some work needed to better validate them and
+canonize them.
 
 # To do
 
@@ -73,6 +74,14 @@ If we get more ambitious (and I plan on it!), given a $LANG environment variable
  set to 'ast', the result would be "inglés de los Estaos Xuníos con
 calteres latinos que se tornó de castellanu escritu con calteres hebreos".
 
+# Version history
+
+ - 0.8.3
+   - Added initial support for parsing -t and -u extensions.
+   - Added initial support for grandfathered tags
+   - Fixed bug on parsing variants when no region code was present
+   - Laid groundwork for various validation options (not fully implemented yet)
+
 # License
 
 All files (unless noted otherwise) can be used, modified and redistributed
@@ -84,9 +93,11 @@ public domain.
 
 The resources directory "cldr" contains the contents of the "bcp47" folder
 of the Unicode CLDR data.  These files are copyrighted by Unicode, Inc., and
-are available and distributed in accordance with [their terms](http://www.unicode.org/copyright.html).
+are available and distributed in accordance with
+[their terms](http://www.unicode.org/copyright.html).
 
-The resources file “language-subtag-registry” is comes from [IANA](https://www.iana.org/assignments/language-subtag-registry).  I do not
+The resources file “language-subtag-registry” is comes from the
+[IANA](https://www.iana.org/assignments/language-subtag-registry).  I do not
 currently distribute it because I am not aware of its exact license.  If it is
 available in a permissive license, please let me know and I will distribute
 a copy.  In the meantime, I will include a parsed and reduced version that holds

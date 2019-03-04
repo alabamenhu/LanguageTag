@@ -63,7 +63,6 @@ class LanguageTag is export {
     ~ @.extensions.sort(*.singleton).map({'-' ~ $_.singleton ~ '-' ~ $_.subtags.join('-')}).join
     ~ ('-x' if @.privateuses)
     ~ @.privateuses.map('-' ~ *.code).join; # don't sort privateuses
-    # test with EN-ShAw-cA-newFoUnD-u-ca-gregory-t-he-Arab-ES-1800-x-foo
   }
   method LanguageTagFilter (:$extendable = False) {
     LanguageTagFilter.new(
@@ -78,23 +77,49 @@ class LanguageTag is export {
 }
 
 class GrandfatheredLanguageTag is LanguageTag {
-  # These can be guaranteed because BCP 47 only allows for these grandfathered
-  # tags.  No others are allowed or will be added.
-  #
-  has IrregularLanguage $.language;
-  has
-  has LanguageTag $.preferred;
+  # These are strictly interpreted BCP47 § 2.2.8, that means that they are
+  # contemplated as a language code unto themselves with the exception of one:
+  # en-GB-oed, seen as en-GB.  Then again, no one should be actively using these
+  # codes either, so ideally this code will never be run in production.
+
+  use Intl::BCP47::Subtag-Registry :old-languages;
+  # This module gives access to %grandfathered-languages and %redundant-languages.
+  # These two consist of two simple items, .[0], a preferred language tag (as a
+  # string), and .[1], a boolean flag for being deprecated.
+
+  has Language $.language;
+  has Language $.original;           # ⬅︎ Only used because of how I think
+  has LanguageTag $.preferred;       #    en-GB-oed needs to be handled.
+  has Region $.region;
+  has Variant @.variants = ();       # ⬅︎ These tags are kept only so that the
+  has Extension @.extensions = ();   #    the language tags can be passed to
+  has PrivateUse @.privateuses = (); #    anything that takes a LanguageTag and
+                                     #    not cause error.
+
+  # Per BCP47 § 2.2.8, each code in its entirety constitutes a language.
+  # However, one exception is made for en-GB-oed, so in that case, it appears
+  # that for access to .region and .language we ought to provide GB for the
+  # region and en for the language. (If incorrect, modify, but the docs aren't
+  # particular clear on that)
 
   method new (Str $text) {
-    my $preferred;
-    given $text {
-      when 'en-GB-oed' {
-        $preferred = LanguageTag.new()
-      }
-    }
+    die unless %grandfathered-languages{$_}:exists;
+    my $preferred = %grandfathered-languages{$_}.head eq ''
+                      ?? Nil
+                      !! LanguageTag.new(%grandfathered-languages{$_}.head);
+    my $deprecated = %grandfathered-languages{$_}.tail;
+    my $language = $text eq 'en-GB-oed'
+                     ?? Language.new(:code('en'))
+                     !! IrregularLanguage(:code($text));
+    my $original = $text;
+    my $region   = Region.new(:code($text eq 'en-GB-oed' ?? 'GB' !! ''));
+    self.bless(:$preferred,:$deprecated,:$language, :$original, :$region,)
   }
   method type {
-    ('ir' unless $regular) ~ 'regular'
+    given $.original {
+      when %grandfathered-languages{$_}.tail { return 'deprecated' }
+      default                                { return 'regular'    }
+    }
   }
 
 }
