@@ -9,6 +9,7 @@ A simple Perl 6 module for processing BCP-74 codes.
     say $tag.variant[0].code; #  ↪︎ "aranese"
 
     my $not-pretty-tag = LanguageTag.new("eN-lATn-Us-u-ca-gregory-t-es-MX");
+    say $not-pretty-tag.Str;       #  ↪︎ "eN-lATn-Us-u-ca-gregory-t-es-MX"
     say $not-pretty-tag.canonical; #  ↪︎ "en-Latn-US-t-es-MX-u-ca-gregory"
 
 You can also filter a set of codes by passing in a tag-like filter:
@@ -35,6 +36,29 @@ header.  However, for the ambitious, the special LanguageTagFilter object
 provides for a good more flexibility and power than what you get from the basic
 `.new(Str)`.
 
+For situations where you need to find the best matching choice between two sets
+of languages (for example, you have a list of acceptable languages for a request
+and you have a list of languages the request can be fulfilled in), you'll want
+to use the lookup function.  (This is not the best name, perhaps, but it is
+the name used in RFC4647):
+
+    my @langs-user-wants  = <en-UK en-US en es-ES>.map({LanguageTag.new: $_});
+    my @langs-i-can-offer = <ar en en-US es>.map({LanguageTag.new: $_});
+
+    my $best = lookup-language-tag( @langs-i-can-offer, @langs-user-wants);
+    #  ↪︎ "en-US"
+    my @best = lookup-language-tags(@langs-i-can-offer, @langs-user-wants);
+    #  ↪︎ "en-US", "en", "es"
+
+The latter is particularly useful if you have situations where you may need fall
+backs, as it gives the top and most specific match first ending at the bottom
+and least specific match.  The method of ordering this is fairly complex, but be
+aware that if in the previous example, @langs-user-wants includes "en", "es" but
+@langs-i-can-offer only has "en-NZ", "en-US" and "es-CL" then no match will be
+provided.  This is because there is no way to know if the user wants Kiwi or
+American English, nor way to know if the user finds Chilean Spanish
+intelligible.
+
 # Supported Standards
 
 Intl::BCP47 implements [BCP47](https://tools.ietf.org/html/bcp47), which defines
@@ -42,7 +66,7 @@ the structure of language tags. It also implements
 [RFC4647](https://tools.ietf.org/html/rfc4647), which defines the nature of
 filtering and matching language tags.
 
-Prelimary support has been added for the implementations of RFC6067 and RFC6497
+Preliminary support has been added for the implementations of RFC6067 and RFC6497
 (the Unicode Extensions for BCP 47, for subtags beginning with the singletons
 `-u` and `-t`).  There is still some work needed to better validate them and
 canonize them.
@@ -76,11 +100,14 @@ calteres latinos que se tornó de castellanu escritu con calteres hebreos".
 
 # Version history
 
+- 0.8.5
+  - Lookups available (no wildcard support yet)
+
  - 0.8.3
    - Added initial support for parsing -t and -u extensions.
    - Added initial support for grandfathered tags
    - Fixed bug on parsing variants when no region code was present
-   - Laid groundwork for various validation options (not fully implemented yet)
+   - Laid groundwork for various validation and canonicalization options (not fully implemented yet)
 
 # License
 

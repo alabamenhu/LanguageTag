@@ -39,8 +39,8 @@ class LanguageTag is export {
   }
 
   # The string method does not make any changes to the underlying codes.
-  # It will not canonicalize or anything of the sort.  This is appropriate in
-  # some cases.
+  # It will not canonicalize or anything of the sort.  This is the expected
+  # behavior for most uses.
   method Str {
     $.language.code
     ~ ('-' ~ $.script.code unless $.script.type eq 'blank')
@@ -205,7 +205,7 @@ class LanguageTagFilter is export {
 
     # RFC4647 does not provide for checking the variants in any order than the
     # ones presented in each tag, and so we do not either.  Perhaps a "canonize"
-    # routerrineth could be made later. Each variant is checked between the tag and the
+    # routine could be made later. Each variant is checked between the tag and the
     # filter until there is either a filter wildcard variant (proceed) or the
     # tag's last variant is reached.  At that point, we should, per the RFC,
     # be returning True.  The filter does NOT provide for extensions or
@@ -293,19 +293,107 @@ sub filter-language-tags-extended(
   }
 }
 
-#
-# Implements RFC4647 § 3.4 Lookup
-sub lookup-language-tag(@available, @preferences --> LanguageTag) {
-  # The basic process is to progressively reduce the tags
-  #
-  #
-}
 
-sub ordered-system-languages {
-  do given %*DISTRO {
-    when /macosx/ {
-      my $p = run 'defaults', 'read', '-g', 'AppleLanguages', :out;
-      ($p.out.slurp: :close).comb: /<[a..zA..Z0..9*-]>+/;
+# Implements RFC4647 § 3.4 Lookup
+# Singular returns top match, plural returns an ordered list
+sub lookup-language-tag(@available-tags, @preferred-tags, $default = LanguageTag.new('en') --> LanguageTag) is export {
+  lookup-language-tags(@available-tags, @preferred-tags, $default) :single;
+}
+sub lookup-language-tags(@available-tags, @preferences-tags, $default = LanguageTag.new('en'), :$single = False) is export {
+  # The general assumption is that the PREFERENCES are longer than what is
+  # AVAILABLE.  Anything that is available but is more specific than the
+  # preferences will fail never match.
+  #
+  # WARNING: this is a first attempt, I do not guarantee how well it works, but
+  #          it seems accurate enough.  It does NOT handle wildcards yet, sorry.
+  #
+  # RFC4647 specifically indicates that subtags are to be progressively shed
+  # until a match is found, and the "best match" is the longest possible match.
+  # The exact process for comparing a best match between two or more stated
+  # preferences is not provided.  Imagine the following:
+  #    AVAILABLE      PREFERRED
+  #    ar             en-UK
+  #    en             en-US
+  #    en-US          en
+  #    es             es-ES
+  # In practice, this combination might not happen but it must be contemplated.
+  # A naïve approach is to test if en-UK exists (it doesn't), then strip it of
+  # the UK and then match "en".  But the user has explicitly also preferred
+  # en-US over bare en, so we cannot test "en" until we have tried en-US.
+  # The approach used instead (and, incidentally, faster) is to check for which
+  # preferred values does each available begin, and store the longest at each pass.
+  # 1. Check that @preferred starts with "ar".
+  #     -> (en-UK => "", en-US => "", en => "", es-ES => "")
+  # 2. Check that @preferred starts with "en".
+  #     -> (en-UK => en, en-US => en, en => en, es-ES => ())
+  # 3. Check that @preferred starts with "en-US"
+  #     -> (en-UK => en, en-US => en-US, en => en, es-ES => "")
+  #                               ^^^^^ longer match than just en
+  # 4. Check that @preferred starts with "es"
+  #     -> (en-UK => en, en-US => en-US, en => en, es-ES => es)
+  # TODO: finish documenting the algorithm
+  #
+  # NOTE: this does not currently handle wildcards, which will make the logic
+  # substantially more complicated, reduce speed/efficiency, and probably not
+  # be used.  When such a routine is coded, it may be a good idea to detect
+  # a wildcard presence and use an alternate algorithm.
+
+  # Initially stringify and add a hyphen to avoid potentially overlapping tags
+  # of different lengths (otherwise "es" [Spanish] might match "est" [Estonian],
+  # and the same can happen with extension/variant tags)
+  my @available = @available-tags.map(*.Str ~ '-');
+  my @preferences = @preferences-tags.map(*.Str ~ '-');
+  #say "Available languages are ", @available;
+  #say "User would prefer ", @preferences;
+  my %matches;
+  %matches{@preferences} = '' xx ∞;
+  for @available -> $tag is rw {
+    %matches.map({
+      .value = $tag if .key.starts-with($tag) && $tag.chars > .value.chars;
+    });
+  }
+  #say "Initial matches are ", %matches;
+
+  # We call this naïve because it does not contemplate partial matches, and
+  # needs to be paired down still.
+  my @naïve-order = lazy gather {
+    for @preferences {
+      take %matches{$_} unless %matches{$_} eq '';
     }
   }
+  #say "Naïve order is ", @naïve-order[0..10];
+  my @smart-order;
+
+  # if there is nothing in naïve-order, then there were no matches at all
+  if @naïve-order {
+    @smart-order = lazy gather {
+      for @naïve-order -> $naïve {
+        # We need to sort into the longest -> shortest tags (because longest
+        # matches are best).
+        my @long-matches = %matches.values.grep(*.starts-with: $naïve).unique.sort(*.comb('-').chars).reverse;
+        my @small-add = (); # these have the lowest priority
+        for @long-matches -> $tag is rw {
+          take LanguageTag.new($tag.substr(0,*-1)); # immediately take a long tag when we get there
+          while $tag = $tag.substr(0,$tag.rindex("-", $tag.chars - 2) // 0) { # remove a tag
+            # Now that we have an ever shortening tag, there are three possibilities.
+            #   1. The tag is already in the long list (ignore to avoid jumping the gun)
+            #   2. The tag does not prefix anything (take immediately)
+            #   3. The tag prefixes something (add to the short list to take later)
+            next if $tag (elem) @long-matches; # (1)
+            if @long-matches.any.starts-with($tag) || @small-add.any.starts-with($tag) {
+              push @small-add, $tag; # (3)
+            }else{
+              take LanguageTag.new($tag.substr(0,*-1)); # (2)
+            }
+          }
+        }
+        take LanguageTag.new($_.substr(0,*-1)) for @small-add;
+      }
+    }
+  }else{
+    @smart-order = $default;
+  }
+  #say "Smart order is ", @smart-order.unique( as => Str, with => &[eq])[0..10];
+
+  $single ?? @smart-order.head !! @smart-order.unique( as => Str, with => &[eq]);
 }
