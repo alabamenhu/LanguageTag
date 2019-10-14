@@ -8,11 +8,15 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-######################
-# Perl 6 precompiled #
-######################
+####################
+# Raku precompiled #
+####################
 .precomp
 lib/.precomp
+#############
+# IDE stuff #
+#############
+.idea
 #######################################################################
 # Ignore the following because file license is unclear.  Available at #
 # https://www.iana.org/assignments/language-subtag-registry           #

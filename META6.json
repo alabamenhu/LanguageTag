@@ -1,16 +1,26 @@
 {
-  "perl"          : "6.*",
-  "name"          : "Intl::BCP47",
-  "version"       : "0.8.5",
-  "api"           : 1,
-  "description"   : "A parser for language tags in accordance with BCP-47",
-  "authors"       : ["Matthew ‘Matéu’ Stephen STUCKWISCH <mateu@softastur.com>"],
-  "auth"          : "github:alabamenhu",
-  "license"       : "Artistic-2.0",
-  "depends"       : [ ],
-  "build-depends" : [ ],
-  "test-depends"  : [ ],
-  "resources"     : [
+  "name": "Intl::BCP47",
+  "description": "A parser for language tags in accordance with BCP-47",
+  "version": "0.8.5",
+  "perl": "6.*",
+  "authors": [
+    "Matthew ‘Matéu’ Stephen STUCKWISCH <mateu@softastur.com>"
+  ],
+  "auth": "github:alabamenhu",
+  "depends": [],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "Intl::BCP47": "lib/Intl/BCP47.pm6",
+    "Intl::BCP47::Actions": "lib/Intl/BCP47/Actions.pm6",
+    "Intl::BCP47::Classes": "lib/Intl/BCP47/Classes.pm6",
+    "Intl::BCP47::Extension-Registry": "lib/Intl/BCP47/Extension-Registry.pm6",
+    "Intl::BCP47::Filter-Actions": "lib/Intl/BCP47/Filter-Actions.pm6",
+    "Intl::BCP47::Filter-Grammar": "lib/Intl/BCP47/Filter-Grammar.pm6",
+    "Intl::BCP47::Grammar": "lib/Intl/BCP47/Grammar.pm6",
+    "Intl::BCP47::Subtag-Registry": "lib/Intl/BCP47/Subtag-Registry.pm6"
+  },
+  "resources": [
     "extlangs.bcp47data",
     "grandfathered.bcp47data",
     "languages.bcp47data",
@@ -21,18 +31,17 @@
     "scripts.bcp47data",
     "variants.bcp47data"
   ],
-  "provides"      : {
-    "Intl::BCP47"                     : "lib/Intl/BCP47.pm6",
-    "Intl::BCP47::Grammar"            : "lib/Intl/BCP47/Grammar.pm6",
-    "Intl::BCP47::Actions"            : "lib/Intl/BCP47/Actions.pm6",
-    "Intl::BCP47::Classes"            : "lib/Intl/BCP47/Classes.pm6",
-    "Intl::BCP47::Filter-Actions"     : "lib/Intl/BCP47/Filter-Actions.pm6",
-    "Intl::BCP47::Filter-Grammar"     : "lib/Intl/BCP47/Filter-Grammar.pm6",
-    "Intl::BCP47::Subtag-Registry"    : "lib/Intl/BCP47/Subtag-Registry.pm6",
-    "Intl::BCP47::Extension-Registry" : "lib/Intl/BCP47/Extension-Registry.pm6"
-  },
-  "tags"          : [
-    "BCP47", "Language", "Tag", "Localization", "Locale", "International", "Internationalization"
+  "license": "Artistic-2.0",
+  "tags": [
+    "BCP47",
+    "Language",
+    "Tag",
+    "Localization",
+    "Locale",
+    "International",
+    "Internationalization"
   ],
-  "source-url"    : "git://github.com/alabamenhu/bcp47.git"
+  "api": 1,
+  "source-url": "git://github.com/alabamenhu/bcp47.git",
+  "raku": "6.*"
 }

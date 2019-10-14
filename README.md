@@ -1,6 +1,6 @@
 # Example
 
-A simple Perl 6 module for processing BCP-74 codes.
+A simple Raku module for processing BCP-74 codes.
 
     use Intl::BCP47;
     my $tag = LanguageTag.new("oc-Latn-ES-aranes-t-en-UK");
@@ -86,7 +86,7 @@ because at the moment, their canonical forms merely parrot back the source
 form (but placing -t before -u) without adjusting internal order or
 capitalization.
 
-Once additional elements of the CLDR are integrated into other Perl 6 modules,
+Once additional elements of the CLDR are integrated into other Raku modules,
 then support may be added for more descriptive readouts of the tags (e.g.,
 saying
 

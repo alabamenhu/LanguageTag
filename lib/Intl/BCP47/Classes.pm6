@@ -122,7 +122,8 @@ class Extension is export {
     # Uncomment out this code once the extensions are finished.
     given $singleton {
       # This elegant solution of ::('Class') for cyclic dependencies is thanks
-      # to #perl6 user vrurg.  Placing it in CHECK means it might
+      # to #perl6 user vrurg.  Placing it in CHECK pushes it to resolve at
+      # runtime.  If possible, find a more elegant way with roles.
       when 'u' { (CHECK ::('UnicodeLocaleExtension')).new: @subtags }
     #  when 't' { return TransfordContentExtension.new: @subtags }
       default  {
