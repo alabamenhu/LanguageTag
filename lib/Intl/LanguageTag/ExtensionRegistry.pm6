@@ -1,4 +1,4 @@
-unit module Extension-Registry;
+unit module ExtensionRegistry;
 
 our %t-data is export(:t) = INIT {
   my %data = ();

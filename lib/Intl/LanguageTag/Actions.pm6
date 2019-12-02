@@ -1,5 +1,4 @@
-unit class BCP47-Actions;
-use Intl::BCP47::Classes;
+#`««unit class BCP47-Actions;
 
 method TOP ($/) {
   make $<langtag>.made;
@@ -22,15 +21,16 @@ method langtag ($/) {
   )
 }
 
-method language      ($/)  { make   Language.new(:code($/.Str)) }
-method script        ($/)  { make     Script.new(:code($/.Str)) }
-method region        ($/)  { make     Region.new(:code($/.Str)) }
-method variant       ($/)  { make    Variant.new(:code($/.Str)) }
-method privateusetag ($/)  { make PrivateUse.new(:code($/.Str)) }
+method language      ($/)  { use Intl::BCP47::Classes :language; make   Language.new(:code($/.Str)) }
+method script        ($/)  { use Intl::BCP47::Classes :script;   make     Script.new(:code($/.Str)) }
+method region        ($/)  { use Intl::BCP47::Classes :region;   make     Region.new(:code($/.Str)) }
+method variant       ($/)  { use Intl::BCP47::Classes :variant;  make    Variant.new(:code($/.Str)) }
+method privateusetag ($/)  { use Intl::BCP47::Classes :private;  make PrivateUse.new(:code($/.Str)) }
 method privateuse    ($/)  { make $<privateusetag>.map(*.made)  }
 method extension     ($/)  {
-  make Extension.new(
+  make Any.new(
     :singleton( $<singleton>.Str),
     :subtags(   $0.map(*.Str))
   )
 }
+»»

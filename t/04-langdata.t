@@ -1,9 +1,9 @@
-use Intl::BCP47;
+use Intl::LanguageTag;
 use Test;
-use Intl::BCP47::Subtag-Registry :languages;
-use Intl::BCP47::Subtag-Registry :regions;
-use Intl::BCP47::Subtag-Registry :variants;
-use Intl::BCP47::Subtag-Registry :scripts;
+use Intl::LanguageTag::Subtag-Registry :languages;
+use Intl::LanguageTag::Subtag-Registry :regions;
+use Intl::LanguageTag::Subtag-Registry :variants;
+use Intl::LanguageTag::Subtag-Registry :scripts;
 # incomplete
 
 # This ensures that the deprecated tags were separated.

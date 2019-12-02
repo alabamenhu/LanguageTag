@@ -1,4 +1,4 @@
-use Intl::BCP47::Grammar;
+use Intl::LanguageTag::Grammar;
 use Test;
 
 # these test basic styles of filtering, for what should be fairly easy

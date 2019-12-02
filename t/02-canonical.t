@@ -1,4 +1,4 @@
-use Intl::BCP47;
+use Intl::LanguageTag;
 use Test;
 
 #done-testing(); exit;

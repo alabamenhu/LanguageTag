@@ -1,7 +1,8 @@
 use Test;
-use Intl::BCP47;
+use Intl::LanguageTag;
 
-
+done-testing();
+#`«
 my @preferred = <en-UK en-US en    es-ES>.map({LanguageTag.new: $_});
 my @available = <ar    en    en-US es   >.map({LanguageTag.new: $_});
 is lookup-language-tag(@available, @preferred).Str, "en-US";
@@ -16,3 +17,4 @@ is lookup-language-tag(@available, @preferred).Str, "es";
 is lookup-language-tags(@available, @preferred)[0..1].map(*.Str).join(';'), "es;pt-PT";
 
 done-testing();
+»

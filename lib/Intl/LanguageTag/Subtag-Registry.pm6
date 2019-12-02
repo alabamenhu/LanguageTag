@@ -1,8 +1,10 @@
 unit module Subtag-Registry;
+# This could be single passed I'm sure, but its done at compile time
+# so only slows things down on install / first use.
 
 our %languages is export(:languages) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<languages.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>+) ','   # language code
@@ -17,9 +19,11 @@ our %languages is export(:languages) = BEGIN {
   %data;
 }
 
+our enum Foo is export(:languages) ( Bar => 2, Fooy => 3);
+
 our %deprecated-languages is export(:languages) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<languages.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>+) ','   # language code
@@ -35,7 +39,7 @@ our %deprecated-languages is export(:languages) = BEGIN {
 
 our %grandfathered-languages is export(:old-languages) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<languages.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>+) ','   # language tag
@@ -49,7 +53,7 @@ our %grandfathered-languages is export(:old-languages) = BEGIN {
 
 our %redundant-languages is export(:old-languages) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<languages.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<languages.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>+) ','   # language tag
@@ -63,7 +67,7 @@ our %redundant-languages is export(:old-languages) = BEGIN {
 
 our %regions is export(:regions) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<regions.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<regions.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>+) ','   # region code
@@ -77,7 +81,7 @@ our %regions is export(:regions) = BEGIN {
 
 our %deprecated-regions is export(:regions) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<regions.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<regions.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>+) ','   # region code
@@ -91,7 +95,7 @@ our %deprecated-regions is export(:regions) = BEGIN {
 
 our %scripts is export(:scripts) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<scripts.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<scripts.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
      (<[a..zA..Z0..9-]>*)       # code
@@ -103,7 +107,7 @@ our %scripts is export(:scripts) = BEGIN {
 
 our %variants is export(:variants) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<variants.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<variants.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
     (<[a..zA..Z0..9-]>+) ','   # code
@@ -118,7 +122,7 @@ our %variants is export(:variants) = BEGIN {
 
 our %deprecated-variants is export(:variants) = BEGIN {
   my %data = ();
-  my @entries = %?RESOURCES<variants.bcp47data>.slurp.lines;
+  my @entries = %?RESOURCES<variants.data>.slurp.lines;
   for @entries -> $entry {
     $entry ~~ /
     (<[a..zA..Z0..9-]>+) ','   # code

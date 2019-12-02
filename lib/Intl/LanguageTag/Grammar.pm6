@@ -22,34 +22,40 @@ token langtag {
 }
 
 token language {
-  || <alpha> ** 2..3 <extlang>  # ISO 639 + optional extended subtag
-  || <alpha> ** 4               # Not actively used, reserved.
-  || <alpha> ** 5..8            # Not actively used, registered subtag.
+  || <.alpha> ** 2..3 <extlang>  # ISO 639 + optional extended subtag
+  || <.alpha> ** 4               # Not actively used, reserved.
+  || <.alpha> ** 5..8            # Not actively used, registered subtag.
 }
 
 token extlang {
-  [ '-' <alpha> ** 3 <?after $||'-'> ] ** 0..3
+  [ '-' <.alpha> ** 3 <?after $||'-'> ] ** 0..3
 }
+
 token script {
-  <alpha> ** 4
+  <.alpha> ** 4
 }
+
 token region {
-  || <alpha> ** 2
-  || <digit> ** 3
+  || <.alpha> ** 2
+  || <.digit> ** 3
 }
+
 token variant {
-  || <alphanum> ** 5..8
-  || <digit> <alphanum> ** 3
+  || <.alphanum> ** 5..8
+  || <.digit> <.alphanum> ** 3
 }
+
 token extension {
   <singleton>
   ['-' (<alphanum> ** 2..8)]+
 }
+
 token privateuse {
   <[xX]> ['-' <privateusetag>]+
 }
+
 token privateusetag {
-  <alphanum> ** 1..8
+  <.alphanum> ** 1..8
 }
 
 token grandfathered {

@@ -1,0 +1,59 @@
+=begin pod
+
+=NAME    TransformedContentExtension
+=AUTHOR  Matthew Stephen Stuckwisch
+=VERSION 0.1
+=TITLE   Transformed Content Extension
+
+=head1 Description
+
+The C<TransformedContentExtension> class implements the transformed content
+extension defined by L<RFC6497|https://tools.ietf.org/html/rfc6497>.
+Between it and L<UTS35|http://unicode.org/reports/tr35/>, there is no extension
+information available about what should be considered valid outside of those
+explicitly mentioned in the data files, which clearly are not exhaustive, as
+references to vendors, etc, are made in the RFC but not in the data files.
+A tag will only be considered strictly correct if its values match those
+found in the data files (I<cldr/transform*.xml>), and otherwise be rejected,
+unless found in the C<-x0> private use subtag.
+
+Dates can be used, but must be the final subtag and will be in the format of
+C<YYYY>, C<YYYYMM>, or C<YYYYMMDD>.
+
+
+
+=head1 Accessing / manipulating extension subtags
+
+The C<TransformedContentExtension> tag provides several methods to access
+the information provided in it.  These methods in the future will return
+objects that allow for greater manipulation of them.  To guarantee future
+compatibility (because it I<is> planned), use C<.List> on results, as the
+C<List> coercion method will return the raw tags (similarly, the C<Str>
+conversion will I<eventually> insert hyphens).
+
+
+=begin item
+C<.origin-language>
+
+The origin language represents the source language that the main tag was
+transformed from.  If C<Nil>, it means that there was no language transformation.
+=end item
+
+=begin item
+C<.hybrid-language>
+
+The hybrid language is one that is mixed in with the main language of the
+language tag.  A common example would be Spanglish, where the main tag is B<en>
+and the C<hybrid-language> tag is B<es>.  Based on TR35, the source of the
+hybrid language in the language tag is either the transform origin language
+(the tags immediately following the C<t-> singleton) or the tags following the
+C<h0-> mechanism tag.   The decision is currently made based on whether the
+subtag following C<h0-> is C<hybrid>.  If so, returns a language
+tag for the transform origin language, and if not, uses the subtags after C<h0->
+In this way, the tags C<en-t-h0-es> and C<en-t-es-h0-hybrid> are effectively
+equivalent and would return the same language tag.
+=end item
+
+
+
+=end pod

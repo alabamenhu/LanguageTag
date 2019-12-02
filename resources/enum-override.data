@@ -1,0 +1,140 @@
+#
+# ENUM OVERRIDES
+#
+# RegistryDescription => EnumName
+#
+# This file contains overrides for certain language names when creating enum values.
+# It is unlikely that end users will use some of the more esoteric ones, but for
+# more common modern languages like Greek, Occitan, Dogri, and Interlingua, this
+# will spare the user some typing.
+#
+# Trailing whitespace is removed, so feel free to align for clarity.
+# Octatherp is used for comments at the beginning of lines only.
+# Remember that spaces will be removed ('Ancient Greek' -> Language::AncientGreek)
+#
+#
+# Override Rule 1.
+# Remove data information, but retain adjectives if present.
+#
+Modern Greek (1453-) => Greek
+Ancient Greek (to 1453) => Ancient Greek
+Interlingua (International Auxiliary Language Association) => Interlingua
+Occitan (post 1500) => Occitan
+Old Occitan (to 1500) => Old Occitan
+Old Provençal (to 1500) => Old Provençal
+Old English (ca. 450-1100) => Old English
+Official Aramaic (700-300 BCE) => Official Aramaic
+Imperial Aramaic (700-300 BCE) => Imperial Aramaic
+Old Aramaic (up to 700 BCE) => Old Aramaic
+Ancient Aramaic (up to 700 BCE) => Ancient Aramaic
+Jewish Babylonian Aramaic (ca. 200-1200 CE) => Jewish Babylonian Aramaic
+Middle Irish (900-1200) => Middle Irish
+Middle Korean (10th-16th cent.) => Middle Korean
+Old Korean (3rd-9th cent.) => Old Korean
+Ottoman Turkish (1500-1928) => Ottoman Turkish
+Old Persian (ca. 600-400 B.C.) => Old Persian
+#
+#
+# Override Rule 2
+# Remove "individual language" information.  Generally, users will want to refer
+# to an individual language, not a family, so we shorten the likely one only.
+#
+Dogri (individual language)   => Dogri
+Nepali (individual language)  => Nepali
+Odia (individual language)    => Odia
+Oriya (individual language)   => Oria
+Malay (individual language)   => Malay
+Zande (individual language)   => Zande
+Konkani (individual language) => Konkani
+Swahili (individual language) => Swahili
+#
+# 3. Modify ambiguous reductions by using alternate names
+#
+##
+# Kwa   stays  Kwa
+# Kwa' becomes Bakwa (Kwa’ in Kwa’)
+  Kwa'    =>   Bakwa
+##
+# Mbe   stays  Mbe
+# Mbe’ becomes Mbo (from Mbə, said/spelled often as Mbo’)
+  Mbe'    =>   Mbo
+##KyanKaryawNaga nqq
+#
+#
+# 4. Correct Punctuation Oddities and/or common English names
+# The general rule in code accidentally consumes apostropes as word breaks.
+# This is a quick fix
+# 4.a. Regions
+Lao People's Democratic Republic      => Laos
+Democratic People's Republic of Korea => North Korea
+Republic of Korea                     => South Korea
+Saint Martin (French part)            => FrenchSaintMartin
+RussianFederation                     => Russia
+Taiwan, Province of China             => Taiwan
+South-Eastern Asia                    => Southeastern Asia
+State of Palestine                    => Palestine
+Islamic Republic of Iran              => Iran
+North Macedonia                       => Macedonia
+The Democratic Republic of the Congo  => D R Congo
+#---4.b. Scripts--------------------------------------
+Arabic (Nastaliq variant)             => Nastaliq
+Imperial Aramaic                      => Aramaic
+Unified Canadian Aboriginal Syllabics => Canadian Syllabics
+Cyrillic (Old Church Slavonic Variant)=> Old Church Slavonic
+Georgian (Mkhedruli and Mtavruli)     => Georgian
+Khutsuri (Asomtavruli and Nuskhuri)   => Khutsuri
+Geʻez                                 => Geez
+Ge'ez                                 =>
+Hangŭl                                =>
+Han with Bopomofo (alias for Han + Bopomofo)   => HanBopomofo
+Hanunóo                               => Hanunoo
+HanSimplifiedVariant,Hans             => HanSimplified
+HanTraditionalVariant,Hant            => HanTraditional
+Japanese syllabaries (alias for Hiragana + Katakana) => Japanese Syllabaries
+Old Italic (Etruscan, Oscan, etc.)    => Old Italic
+Jamo (alias for Jamo subset of Hangul) => Jamo
+Japanese (alias for Han + Hiragana + Katakana) => Japanese
+Khitan large script                   => Khitan Large
+Khitan small script                   => Khitan Small
+Korean (alias for Hangul + Han)       => Korean
+Latin (Fraktur variant)               => Fraktur
+Latin (Gaelic variant)                => Gaelic
+#OberiƆkaimɛ,Medf
+#Moḍī,Modi
+#NepālaLipi,Newa
+#NaxiDongba,Nkdb
+#Na²¹ɕi³³To³³Ba²¹,Nkdb
+#NakhiTomba,Nkdb
+#NaxiGeba,Nkgb
+#Na²¹ɕi³³Gʌ²¹Ba²¹,Nkgb
+#NaKhi²Ggŏ¹Baw,Nkgb
+#NakhiGeba,Nkgb
+#OlChiki,Olck
+#OlCemet,Olck
+#Ol,Olck
+#KlingonKLIPIqaD,Piqd
+#Miao,Plrd
+#Pollard,Plrd
+#InscriptionalParthian,Prti
+#Siddham,Sidd
+#Siddhaṃ,Sidd
+#Siddhamātṛkā,Sidd
+#ZanabazarSquare,Zanb
+#ZanabazarinDörböljinUseg,Zanb
+#XewteeDörböljinBicig,Zanb
+#HorizontalSquareScript,Zanb
+#CodeForInheritedScript,Zinh
+#MathematicalNotation,Zmth
+#SymbolsEmojiVariant,Zsye
+Symbols,Zsym => Symbols
+Code for unwritten documents => Unwritten
+Code for undetermined script => Undetermined
+Code for uncoded script => Uncoded
+#
+# IGNORE INDEX
+# To prevent special casing the code, any reduction whose value is ''
+# (the empty string) will not be added.  This really only applies to
+# N'Ko which has N'Ko and N’Ko in its description, and Private Use,
+# which is rather pointless to add as an enum.
+Private Use =>
+N’Ko =>

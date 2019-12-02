@@ -1,6 +1,16 @@
+# NOTICE
+
+This module recently changed its named from `Intl::BCP47` to `Intl::LanguageTag`.
+The change was done to make it more obvious what its purpose is and because it
+had begun to integrate more than just BCP-47.  For the time being, it will continue
+to `provide` under the old name to preserve backwards compatibility, but code should
+be updated to reference the new name.  If there are problems with it under the old
+name, please file a ticket.  Because of other internal reorganization, the API level
+was increased to 2.
+
 # Example
 
-A simple Raku module for processing BCP-74 codes.
+A simple Raku module for processing BCP-74-style language tags.
 
     use Intl::BCP47;
     my $tag = LanguageTag.new("oc-Latn-ES-aranes-t-en-UK");
@@ -59,6 +69,26 @@ provided.  This is because there is no way to know if the user wants Kiwi or
 American English, nor way to know if the user finds Chilean Spanish
 intelligible.
 
+# Enums
+
+If you don't like working directly with language codes, there are some enum values that
+you can access whose `.Str` is equivalent to the associated IANA code:
+
+    use Intl::LanguageTag :enums;    # or :language-enum or :region-enum
+
+    say Language::English;               #  ↪︎ "English"
+    say Language::English.Str;           #  ↪︎ "en"
+    say Region::SaoTomeAndPrincipe;      #  ↪︎ "SaoTomeAndPrincipe"
+    say Region::SaoTomeAndPrincipe.Str;  #  ↪︎ "ST"
+
+While not currently supported, eventually the goal is to enable construction of
+`LanguageTag` objects by passing the appropriate values like the following:
+
+    LanguageTag.new: Language::Portuguese,
+                     Script::Latin,
+                     Region::Mozambique,
+                     Variant::Orthography1990
+
 # Supported Standards
 
 Intl::BCP47 implements [BCP47](https://tools.ietf.org/html/bcp47), which defines
@@ -81,24 +111,20 @@ deprecated or undefined tags), support for irregular grandfathered tags, support
 for preferred forms of both standard and grandfathered tags, and better
 documentation.
 
-Additional support will later be given for handling the two defined extensions
+Complete support will later be given for handling the two defined extensions
 because at the moment, their canonical forms merely parrot back the source
 form (but placing -t before -u) without adjusting internal order or
 capitalization.
 
-Once additional elements of the CLDR are integrated into other Raku modules,
-then support may be added for more descriptive readouts of the tags (e.g.,
-saying
-
-    say LanguageTag.new("en-Shaw-US-t-es-Hebr").description
-
-would say "English from the United States in the Shaw script which was transformed
-(translated) from Spanish written in the Hebrew script" (or similar verbiage).
-If we get more ambitious (and I plan on it!), given a $LANG environment variable
- set to 'ast', the result would be "inglés de los Estaos Xuníos con
-calteres latinos que se tornó de castellanu escritu con calteres hebreos".
-
 # Version history
+
+- 0.9.0
+  - Preliminary Wildcard support
+  - Updated to IANA subtag registry dated 2019-09-16
+  - Language and Region enums available under Language:: and Region:: namespaces
+  - Preliminary semantic support for the T extension (U support still very early)
+  - Preliminary creation of POD6 documentation (both inline and separate).
+    - Particularly evident for the T extension
 
 - 0.8.5
   - Lookups available (no wildcard support yet)

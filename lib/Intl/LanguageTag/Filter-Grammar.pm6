@@ -4,7 +4,7 @@ unit grammar BCP47-Filter-Grammar;
 # wildcards (*) are accepted in the language, script, region, or any variant
 # slot.  Per RFC4647, the only one of these that is truly significant is the
 # language position, because an EMPTY slot is considered the same as a wildcard
-# (in other words, 'de-DE' and 'de-*-DE-*' will generate identically filters).
+# (in other words, 'de-DE' and 'de-*-DE-*' will generate identical filters).
 # The length of the tags means that, but for the first one, all can be
 # unambiguously determined (Lang = 4 chars, Region = 2, subtags = 5-8).
 #
