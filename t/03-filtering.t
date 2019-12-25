@@ -1,6 +1,6 @@
 use Intl::LanguageTag;
 use Test;
-use Intl::BCP47::Filter-Grammar;
+use Intl::LanguageTag::Filter-Grammar;
 
 # Fix once subs are reenabled
 done-testing();
