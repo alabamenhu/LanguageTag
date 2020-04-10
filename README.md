@@ -12,9 +12,9 @@ was increased to 2.
 
 A simple Raku module for processing BCP-74-style language tags.
 
-    use Intl::BCP47;
-    my $tag = LanguageTag.new("oc-Latn-ES-aranes-t-en-UK");
+    use Intl::LanguageTag;
 
+    my $tag = LanguageTag.new("oc-Latn-ES-aranes-t-en-UK");
     say $tag.language.code;   #  ↪︎ "oc"
     say $tag.variant[0].code; #  ↪︎ "aranese"
 
@@ -99,7 +99,11 @@ filtering and matching language tags.
 Preliminary support has been added for the implementations of RFC6067 and RFC6497
 (the Unicode Extensions for BCP 47, for subtags beginning with the singletons
 `-u` and `-t`).  There is still some work needed to better validate them and
-canonize them.
+canonize them.  Currently, when accessing the subtag values for extension,
+you should use, e.g. `$langtag.extension<u>.mechanism.List`.  The `.List`
+method will be stable, but `.mechanism` (and other similar subtags) will not
+be guaranteed to be a list and may later be converted to a class or return special
+special `Proxy` objects.  `.List` will always return the subtags in list format.
 
 # To do
 

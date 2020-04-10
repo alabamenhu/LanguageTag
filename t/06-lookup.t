@@ -1,6 +1,9 @@
 use Test;
 use Intl::LanguageTag;
 
+# These tests are currently not fully function and will be looked at again
+# when the big refactor is finished (where LanguageTag has Language/Region as subclasses)
+
 done-testing();
 #`«
 my @preferred = <en-UK en-US en    es-ES>.map({LanguageTag.new: $_});

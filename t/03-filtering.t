@@ -1,10 +1,9 @@
 use Intl::LanguageTag;
 use Test;
-use Intl::BCP47::Filter-Grammar;
+use Intl::LanguageTag::Filter-Grammar;
 
 # Fix once subs are reenabled
-done-testing();
-#`«
+
                      # should match filters A B C D E F
 my @tags-init = ('de-DE',                #  a b c
                  'de-de',                #  a b
@@ -42,4 +41,4 @@ is ([+] do for @tags { $_ ~~ $filter-d }), 2;  # any explicit Latn
 is ([+] do for @tags { $_ ~~ $filter-e }), 2;  # any explicit Latn
 # is ([+] do for @tags { $_ ~~ $filter-f }), 1;  # any 1996 orthography, buggy
 done-testing();
-»
+

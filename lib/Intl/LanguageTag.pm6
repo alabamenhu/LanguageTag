@@ -8,13 +8,25 @@ grammar) to be placed into a single gigantic file with lots of stubs.
 
 =end pod
 
-unit module LangTag;
+unit module LangTag; # Dummy name, only because LanguageTag is also the main class name
+
+use Intl::LanguageTag::X;
 
 # STUBBED CLASSES
 class LanguageTagFilter { … }
 class LanguageTagFilterActions { … }
 
 
+
+=begin pod
+
+=head1 Language Tag
+
+The C<LanguageTag> class
+
+=end pod
+
+#| Represents a BCP-74 language/locale identifier.
 class LanguageTag is export {
 
     # Stub the inner classes
@@ -80,7 +92,7 @@ class LanguageTag is export {
     # It will not canonicalize or anything of the sort.  This is the expected
     # behavior for most uses.
     method Str {
-        $.language.code
+        $!language.code
                 ~ ('-' ~ $.script.code unless $.script.type eq 'blank')
                 ~ ('-' ~ $.region.code unless $.region.type eq 'blank')
                 ~ @.variants.map('-' ~ *.code.lc).join
@@ -121,9 +133,22 @@ class LanguageTag is export {
         multi method gist (::?CLASS:D:) { '[Language:' ~ $!code ~ ']' }
         multi method gist (::?CLASS:U:) { '(Language)'                }
 
-        # The canonical form for languages is to be lower-cased
-        method canonical { $!code.lc }
+        #| A canonical language subtag is lower-cased
+        method canonical ( --> Str) { $!code.lc }
+        #| A valid language
+        method validate ( --> Bool ) {
+            # Per 2.2.9, a tag is valid if…
+            #   (1) tag is well formed
+            #   (2) in the IANA subtag registry
+            # Since 2 implies 1…
+            %languages{$!code.lc}:exists
+            # …is sufficient for validation
+        }
 
+        method Str { $!code }
+
+        # The following text and method below are deprecated until a new API can be
+        # determined to provide this information
         # There are three types defined in most data, regular, deprecated, but also
         # some data sets separate out mis, mul, zxx which have special meanings
         # (for unidentified, multiple, etc).  No reason, I don't think, to
@@ -136,6 +161,7 @@ class LanguageTag is export {
                 default                               { return 'unregistered' }
             }
         }
+
     }
 
     class IrregularLanguage is Language {
@@ -147,28 +173,49 @@ class LanguageTag is export {
         # them have been fully deprecated.  That handling should be taken care of in
         # the other GrandfatheredLanguageTag code, though.
         method canonical { $!code.lc }
-        # Technically, they should be "irregular", but they are technically valid.
+        #| DEPRECATED until new API can be made.
+        #| Technically, they should be "irregular", but they are technically valid.
         method type { 'regular' }
     }
 
+    =begin pod
+
+      =head2 Script
+
+      The script class
+
+    =end pod
+    #| A writing system
     class Script {
         # There are a few other script codes other than the ones that are included in
         # IANA's database.  They can be used so long as :strict isn't enabled.
         use Intl::LanguageTag::Subtag-Registry :scripts;
 
-        has Str $.code is rw;
+        subset ScriptStr of Str where /<[a..zA..Z]>**4/ || '';
+
+        has ScriptStr $.code is rw;
 
         multi method gist (::?CLASS:D:) { '[Script:' ~ $!code ~ ']' }
         multi method gist (::?CLASS:U:) { '[Script]'                }
-        # The canonical form of scripts is an initial cap and three lowercase
-        method canonical { $!code.tclc }
+
+
+        #| A script is canonical is has an initial cap and three lowercase
+        method canonical (::?CLASS:D: --> Str) { $!code.tclc }
+        #| A canonical script is has an initial cap and three lowercase
+        method canonicalize (::?CLASS:D: --> Bool) { $!code = $!code.tclc }
+
+        #| A script is valid if it exists in the IANA database
+        method valid (::?CLASS:D: --> Bool) { %scripts{$!code.tclc}:exists }
+        #| Scripts will be invalid if they don't exist
+        method validate { }
+
         # There are a few special script types, namely the private-use Qa* and the ones
         # with special meaning Zmth, Zsye, Zsym, Zxxx and Zzzz.  At the moment, no
         # need to distinguish them as they are all valid.  Interestingly, although
         # in many places Qaai is listed as deprecated, in the formal IANA registry, it
         # is *not* so designated.
-        method type {
-            given $.code {
+        method type is DEPRECATED('.valid to check if registered') {
+            given $!code {
                 when %scripts{$_}:exists            { return 'regular'      }
                 when ''                             { return 'blank'        }
                 default                             { return 'unregistered' }
@@ -230,27 +277,27 @@ class LanguageTag is export {
     }
 
     class Extension {
-        my %extensions = ();
-        #= List of known extensions.
-        #= Keys are 1 char Str, values are type objects.
+        subset Letter of Str where * ~~ /^<[a..z]>$/;
 
-        method REGISTER (Str $id, Extension:U $class) {
-            #= Registers an extension.  Use Extension.REGISTER('x',::?CLASS)
-            #= as the final line of any subclass to easily register it.
+        my Extension:U %extensions{Letter:D} = ();
+        #= List of known extensions.
+
+        method REGISTER (Letter:D $id, Extension:U $class) {
+            #= Registers an extension.  use the line ｢Extension.REGISTER('x',::?CLASS)｣
+            #= as the final line of any subclass to make it known to Extension.
             %extensions{$id} = $class
         }
 
-        has $.singleton;
-        has @.subtags;
+        has Letter $.singleton;
+        has        @.subtags;
 
         multi method new(:$singleton, :@subtags) {
 
-            # Check that the extension is registered, otherwise return the default (base class)
-            if %extensions{$singleton}:exists {
-                return %extensions{$singleton}.new(@subtags)
-            } else {
-                self.bless(:$singleton, :@subtags);
-            }
+            # Return base class if not registered
+            %extensions{$singleton}:exists
+                ?? %extensions{$singleton}.new(@subtags)
+                !! self.bless(:$singleton, :@subtags)
+
 
             # Early 2019: This elegantish solution of ::('Class') for cyclic dependencies is thanks
             #             to #perl6 user vrurg.  Placing it in CHECK pushes it to resolve at
@@ -275,11 +322,13 @@ class LanguageTag is export {
         }
     }
 
+
     class PrivateUse {
         has $.code is rw;
         multi method gist (Any:D:) { '[PrivateUse:' ~ $!code ~ ']' }
-        multi method gist (Any:U:) { '[PrivateUse]' }
+        multi method gist (Any:U:) { '(PrivateUse)' }
     }
+
 
     class LanguageTagActions {
         method TOP ($/) {
@@ -389,8 +438,8 @@ class LanguageTagFilter is export {
         # here.  That said, these are left here in case someone wishes to
         # modify the LanguageTagFilter after construction.
         return False unless
-                @.languages ~~ ()               # implied  wildcard
-                        || @.languages.any ~~ Wildcard  # explicit wildcard
+                @!languages ~~ ()               # implied  wildcard
+                || @!languages.any ~~ Wildcard  # explicit wildcard
                 || $tag.language.canonical eqv @.languages.map(*.canonical).any;
         # If the script is provided in the filter, but not in the tag, according to
         # RFC4647 we should not match.  This seems a bit odd to me, especially if the
@@ -398,16 +447,16 @@ class LanguageTagFilter is export {
         # script.  An adverb in the future may allow for non-standard (but fully
         # logical) matching by implementing the default script
         return False unless
-                @.scripts ~~ ()               # implied  wildcard
-                        || @.scripts.any ~~ Wildcard  # explicit wildcard
+                @!scripts ~~ ()               # implied  wildcard
+                || @!scripts.any ~~ Wildcard  # explicit wildcard
                 || $tag.script.canonical eqv @.scripts.map(*.canonical).any;
         return False unless
-                @.regions ~~ ()               # implied  wildcard
-                        || @.regions.any ~~ Wildcard  # explicit wildcard
+                @!regions ~~ ()               # implied  wildcard
+                || @!regions.any ~~ Wildcard  # explicit wildcard
                 || $tag.region.canonical eqv @.regions.map(*.canonical).any;
         return False unless
-                @.variants ~~ ()              # implied  wildcard
-                        || @.variants.any ~~ Wildcard # explicit wildcard
+                @!variants ~~ ()              # implied  wildcard
+                || @!variants.any ~~ Wildcard # explicit wildcard
                 || $tag.variants >= @.variants;
         # impossible to match if the
         # filter has more variants.
@@ -421,10 +470,10 @@ class LanguageTagFilter is export {
         # privateuses and explicitly states in § 3.3.2.3.D, “if the language tag's
         # subtag is a "singleton" (a single letter or digit, which includes the
         # private-use subtag 'x') the match fails.”
-        for ^@.variants -> $index {
+        for ^@!variants -> $index {
             return False unless
-                    @.variants[$index].code    eq '*'
-                    || @.variants[$index].code.lc eq $tag.variants[$index].code.lc
+                    @!variants[$index].code    eq '*'
+                    || @!variants[$index].code.lc eq $tag.variants[$index].code.lc
         }
         # We MAY want to later add an option for extended checking.  However, a
         # wildcard tag would be highly ambiguous in a string-based format, although
@@ -500,18 +549,13 @@ class TransformedContent is LanguageTag::Extension does Associative {
     has    @.fields = ();  # array to maintain input order, canonical is as entered
 
     class Field {
-        has Str $.id;        # Alpha + num, always.
-        has Str @.tags = (); # All tags allow for multiple; tags are order sensitive, so
+        has Str $.id;        #= ID matches [a..z][0..9]
+        has Str @.tags = (); #= Tags are order sensitive
         method has-date { @!tags.tail ~~ /<[0..9]>**4[<[0..9]>**2]**0..2/ }
         # in the canonization process, they should not be sorted.
-        multi method gist (::?CLASS:D:) { '[' ~ $.id ~ ':' ~ @.tags.join(',') ~ ']' }
+        multi method gist (::?CLASS:D:) { '[' ~ $!id ~ ':' ~ @!tags.join(',') ~ ']' }
         multi method gist (::?CLASS:U:) { '[Field]' }
-        method canonical { $.id ~ '-' ~ @!tags.join('-') }
-    }
-    class Hybrid-Locale is Field {
-        method canonical { 'h0-hybrid' }
-        method id { 'h0' }
-        multi method gist { '[Hybrid-Locale]' }
+        method canonical { $!id ~ '-' ~ @!tags.join('-') }
     }
 
     proto new (|) {*}
@@ -640,15 +684,27 @@ class TransformedContent is LanguageTag::Extension does Associative {
     #| .List on the result (any returned object will List-ify into the raw tags)
     method ime { once warn "Make sure to use .ime.List for maximum future compatibility"; self.fields<i0>.tags }
 
+    class Keyboard is Field {
+        #| Per documentation, *usually* the first field will be a platform, but there is no obligation.
+        #| Ergo, canonical just checks that
+        method canonical  { 'k0' }
+        method id         { 'k0' }
+    }
     #| This method currently returns the tags.  At some point in the future
     #| it may return a specialized object, so for maximum compatibility, use
     #| .List on the result (any returned object will List-ify into the raw tags)
     method keyboard { once warn "Make sure to use .keyboard.List for maximum future compatibility"; self.fields<k0>.tags }
+
     #| This method currently returns the tags.  At some point in the future,
     #| it will return a specialized object, so for maximum compatibility, use
     #| .List on the result (any returned object will List-ify into the raw tags)
     method machine-translation { once warn "Make sure to use .machine-translation.List for maximum future compatibility";  self.fields<t0>.tags }
 
+    class Hybrid-Locale is Field {
+        method canonical  { 'h0-hybrid' }
+        method id         { 'h0' }
+        multi method gist { '[Hybrid-Locale]' }
+    }
     #| If the hybrid tag is present, then the main language is hybridized with
     #| the origin language, if not, there is no hybrid.
     method hybrid-locale { self.fields<h0>:exists ?? $!origin !! Nil }
@@ -661,7 +717,7 @@ class TransformedContent is LanguageTag::Extension does Associative {
 
     # ASSOCIATIVE ROLE METHODS
     # Consider these to be experimental at the current time.
-    multi method AT-KEY (::?CLASS:D: $field) { return-rw @!fields.grep(*.id eq $field).head }
+    multi method     AT-KEY (::?CLASS:D: $field) { return-rw @!fields.grep(*.id eq $field).head }
     multi method EXISTS-KEY (::?CLASS:D: $field) {return-rw ?(@!fields.grep(*.id eq $field).elems) }
     multi method ASSIGN-KEY (::?CLASS:D: $field, @vals where *.all ~~ Str) {push @!fields, Field.new(:id($field), :tags(@vals))}
     multi method ASSIGN-KEY (::?CLASS:D: $field, Field $val where {$val.id eq $field}) { push @.fields, $val }
@@ -840,37 +896,31 @@ multi sub filter-language-tags(
 sub filter-language-tags-basic(
         @source where { @source.all ~~ LanguageTag },
         Str @filter,
-        :$canonical = False,    # to be implemented
-        :$nonpreferred = False, # to be implemented
-        :$suppressed = False    # to be implemented
+        :$canonical    = False,   # to be implemented
+        :$nonpreferred = False,   # to be implemented
+        :$suppressed   = False    # to be implemented
         --> Seq
         ) {
     my $filter = @filter.any;
-    do gather {
-        for @source -> $source-tag {
-            take $source-tag if (
-                    || $source-tag.Str.lc eq $filter.lc                 # exact match
-                            || $source-tag.Str.lc.starts-with($filter.lc ~ '-') # prefix match, ending on a tag
-                            || $filter eq '*'                                   # wildcard matches all
-                    )
-        }
+    do gather for @source -> $source-tag {
+        take $source-tag if (
+                || $source-tag.Str.lc eq $filter.lc                 # exact match
+                || $source-tag.Str.lc.starts-with($filter.lc ~ '-') # prefix match, ending on a tag
+                || $filter eq '*'                                   # wildcard matches all
+                )
     }
 }
 
 sub filter-language-tags-extended(
         @source where {@source.all ~~ LanguageTag},
         @filter where {@filter.all ~~ LanguageTagFilter},
-        :$canonical = False,    # to be implemented
-        :$nonpreferred = False, # to be implemented
-        :$suppressed = False    # to be implemented
+        :$canonical    = False,    # to be implemented
+        :$nonpreferred = False,    # to be implemented
+        :$suppressed   = False     # to be implemented
         --> Seq
         ) {
-    do gather {
-        for @source -> $source-tag {
-            take $source-tag if (
-                    $source-tag ~~ @filter.any
-                    )
-        }
+    do gather for @source -> $source-tag {
+        take $source-tag if $source-tag ~~ @filter.any
     }
 }
 

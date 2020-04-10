@@ -1,3 +1,20 @@
+#
+#    #### ######  ###   ####   ##
+#   ##      ##   ## ##  ## ##  ##
+#   #####   ##   ## ##  ####   ##   Read the notices below before
+#      ##   ##   ## ##  ##          making any changes.
+#   ####    ##    ###   ##     ##
+#
+# WARNING: If changing this file (in particular what is output), you
+#          MUST adjust the file in Extension-Registry.pm6 to match.
+#
+#  The files used by this are those contained in the CLDR common/bcp47
+#  directory, with the validity directory thrown in for good measure.
+#  In the future I will rework this to take a freshly unpacked CLDR
+#  and maybe download the data automatically.
+#
+#  Yes this file is ugly.  Sorry.
+
 use XML;
 
 sub elems-for-tag($xml, $name) {
@@ -5,6 +22,9 @@ sub elems-for-tag($xml, $name) {
   set (.<name>.Str for $node.lookfor(:TAG('type')));
 }
 
+# The abbreviations in CLDR are in the format of
+#   alnum tilde alnum
+# Such that "za~c" = "za", "ab", "zc"
 sub expand-abbreviations($text) {
   my @elems = $text.split(/\s+/,:skip-empty);
   gather for @elems -> $elem {
@@ -15,6 +35,8 @@ sub expand-abbreviations($text) {
     }
   }
 }
+
+
 my %data = ();
 
 my $calendar = open-xml('cldr/calendar.xml');
@@ -31,9 +53,9 @@ my $collation = open-xml('cldr/collation.xml');
 %data<kh> = elems-for-tag($collation, 'kh');
 %data<kk> = elems-for-tag($collation, 'kk');
 %data<kn> = elems-for-tag($collation, 'kn');
-%data<kr> = elems-for-tag($collation, 'kr'); # extra work needed
+%data<kr> = elems-for-tag($collation, 'kr');   # ⬅ extra work needed
 %data<ks> = elems-for-tag($collation, 'ks');
-#my $kt = elems-for-tag($collation, 'kt'); # extra work needed
+#%data<ks> = elems-for-tag($collation, 'kt');  # ⬅ extra work needed
 %data<kv> = elems-for-tag($collation, 'kv');
 
 my $currency = open-xml('cldr/currency.xml');
@@ -79,7 +101,7 @@ my $number = open-xml('cldr/number.xml');
 my $timezone = open-xml('cldr/timezone.xml');
 %data<tz> = elems-for-tag($timezone, 'tz');
 
-my $file = open "extension-u.bcp47data", :w;
+my $file = open "extension-u.data", :w;
 $file.say(.key ~ ':' ~ .value.keys.join(',')) for %data;
 close $file;
 
@@ -110,6 +132,6 @@ my $input = open-xml('cldr/transform_ime.xml');
 
 
 
-$file = open "extension-t.bcp47data", :w;
+$file = open "extension-t.data", :w;
 $file.say(.key ~ ':' ~ .value.keys.join(',')) for %data;
 close $file;

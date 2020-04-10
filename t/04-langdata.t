@@ -4,7 +4,8 @@ use Intl::LanguageTag::Subtag-Registry :languages;
 use Intl::LanguageTag::Subtag-Registry :regions;
 use Intl::LanguageTag::Subtag-Registry :variants;
 use Intl::LanguageTag::Subtag-Registry :scripts;
-# incomplete
+# Note!  This test will probably be removed in its entirety, because the .type seems fairly pointless.
+# Instead, methods like deprecated/canonical/valid will be used instead.
 
 # This ensures that the deprecated tags were separated.
 nok   %regions.keys.List.any ∈ %deprecated-regions.keys.List;
