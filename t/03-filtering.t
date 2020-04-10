@@ -41,4 +41,3 @@ is ([+] do for @tags { $_ ~~ $filter-d }), 2;  # any explicit Latn
 is ([+] do for @tags { $_ ~~ $filter-e }), 2;  # any explicit Latn
 # is ([+] do for @tags { $_ ~~ $filter-f }), 1;  # any 1996 orthography, buggy
 done-testing();
-
