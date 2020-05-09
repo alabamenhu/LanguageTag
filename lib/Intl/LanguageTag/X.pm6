@@ -6,6 +6,8 @@ role X::Intl::LanguageTag { }
 
 
 class X::Intl::LangaugeTag::Invalid does X::Intl::LanguageTag {
+    has $.tag;
+
     method message { "Not possible to create language tag: \n"
                      ~ "‘{$!tag}’ is an invalid tag." }
 }
