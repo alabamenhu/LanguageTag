@@ -1,12 +1,9 @@
-=begin pod
-
-Unfortunately, the LanguageTags are cyclical in nature.
-This isn't per se by design, but one of the defined extensions allows
-for an inner language tag (slightly less capable, but should be expected
-to be usable).  This, effectively, requires the entire module (but for
-grammar) to be placed into a single gigantic file with lots of stubs.
-
-=end pod
+# Implementation note:
+# Unfortunately, the LanguageTags are cyclical in nature.
+# This isn't per se by design, but one of the defined extensions allows
+# for an inner language tag (slightly less capable, but should be expected
+# to be usable).  This, effectively, requires the entire module (but for
+# grammar) to be placed into a single gigantic file with lots of stubs.
 
 unit module LangTag; # Dummy name, only because LanguageTag is also the main class name
 
@@ -15,8 +12,6 @@ use Intl::LanguageTag::X;
 # STUBBED CLASSES
 class LanguageTagFilter { … }
 class LanguageTagFilterActions { … }
-
-
 
 =begin pod
 
@@ -30,86 +25,90 @@ The C<LanguageTag> class
 class LanguageTag is export {
 
     # Stub the inner classes
-    class Language   { … }
-    class IrregularLanguage { … }
-    class Script     { … }
-    class Region     { … }
-    class Variant    { … }
-    class Extension  { … }
-    class PrivateUse { … }
-#   grammar Grammar  { … } Not sure if this should go here or stay separate
+    class Language           { … }
+    class IrregularLanguage  { … }
+    class Script             { … }
+    class Region             { … }
+    class Variant            { … }
+    class Extension          { … }
+    class PrivateUse         { … }
     class LanguageTagActions { … }
 
-    has Language   $.language;
-    has Script     $.script;
-    has Region     $.region;
-    has Variant    @.variants;
-    has Extension  @.extensions;
-    has PrivateUse @.privateuses;
+    has Language   $.language;     #= The language of the tag
+    has Script     $.script;       #= The script of the tag
+    has Region     $.region;       #= The region of the tag
+    has Variant    @.variants;     #= The variants associated with the tag
+    has Extension  @.extensions;   #= The extensions associated with the tag
+    has PrivateUse @.privateuses;  #= Any private use tags
 
 
+    #| Creates a new language tag from the string
     method new(Str $string, :$strict, :$autopreferred) {
         use Intl::LanguageTag::Grammar;
 
         my %base = BCP47-Grammar.parse($string, :actions(LanguageTagActions)).made;
+
+        # Zero out private uses if the first one is Any, not sure why this is happening
         my @privateuses = %base<privateuses><>;
-        @privateuses = () if @privateuses[0].WHAT ~~ Any; # not sure why this is happening
-        self.bless(
-                :language(  %base<language>),
-                :script(    %base<script>  // Script.new(:code(''))),
-                :region(    %base<region>  // Region.new(:code(''))),
-                :variants(  %base<variants><>),
-                :extensions(%base<extensions><>),
-                :@privateuses,
-                )
+        @privateuses = () if @privateuses[0].WHAT ~~ Any;
+
+        self.bless:
+                language    =>  %base<language>,
+                script      => (%base<script>  // Script.new(:code(''))),
+                region      => (%base<region>  // Region.new(:code(''))),
+                variants    =>  %base<variants>,
+                extensions  =>  %base<extensions><>,
+                privateuses =>  @privateuses
     }
 
     # to be international, maybe use these ⚐✎⇢☺︎☻
 
-    #| This accessor method allows indexed look ups of the type $tag.extensions<t>.
-    #| In order to allow for round-tripping (in non-canonical forms), the order of
-    #| extensions must be preserved.  The mixed in role allows transparently
-    #| associative uses.  Returns Nil if not found.  Not sure if (Any) or Empty is better
+    #| The extensions method returns each extension on the C<LanguageTag> as a list
+    #| while also permitting indexed look ups of the type C<$tag.extensions<t>>.
     method extensions {
         @!extensions but role {
+            # This is the magic that lets us be both associative and positional
+            # Perhaps it could be better done at BUILD so that we don't need to do this at each access
             also does Associative;
-            # The .head returns Nil if it's not found.
             method AT-KEY ($key) { self.grep( *.singleton eq $key ).head }
         }
     }
 
     multi method gist (::?CLASS:U:) { '(LanguageTag)' }
     multi method gist (::?CLASS:D:) {
-        '['
-                ~ $.language.code
-                ~ ('-' ~ $.script.code unless $.script.type eq 'blank')
-                ~ ('-' ~ $.region.code unless $.region.type eq 'blank')
-                ~ ('…' if ?@.extensions || ?@.variants || ?@.privateuses)
-                ~ ']'
+        ~ '['
+        ~   $!language.code
+        ~   ('-' ~ $!script.code unless $!script.type eq 'blank')
+        ~   ('-' ~ $!region.code unless $!region.type eq 'blank')
+        ~   ('…' if ?@!extensions || ?@!variants || ?@!privateuses)
+        ~ ']'
     }
 
-    # The string method does not make any changes to the underlying codes.
-    # It will not canonicalize or anything of the sort.  This is the expected
-    # behavior for most uses.
+    #| The default string method will directly map each entity
+    #| to the as it is stored or created.
     method Str {
         $!language.code
-                ~ ('-' ~ $.script.code unless $.script.type eq 'blank')
-                ~ ('-' ~ $.region.code unless $.region.type eq 'blank')
-                ~ @.variants.map('-' ~ *.code.lc).join
-                ~ @.extensions.map({'-' ~ $_.singleton ~ '-' ~ $_.subtags.join('-')}).join
-                ~ ('-x' if @.privateuses)
-                ~ @.privateuses.map('-' ~ *.code).join; # don't sort privateuses
+                ~ ('-' ~ $!script.code unless $!script.type eq 'blank')
+                ~ ('-' ~ $!region.code unless $!region.type eq 'blank')
+                ~ @!variants.map('-' ~ *.code.lc).join
+                ~ @!extensions.map({'-' ~ .singleton ~ '-' ~ .subtags.join('-')}).join
+                ~ ('-x' if @!privateuses)
+                ~ @!privateuses.map('-' ~ *.code).join; # don't sort privateuses
     }
-    method canonical (Any:D:) {
+
+    #| The canonical method stringifies the language tag, but unlike `Str()`, it will
+    #| create a canonical variant of the tag.  This will eventually error if there are
+    #| problems (e.g., the tag cannot be made canonical for some reason)
+    method canonical (Any:D: --> Str) {
         # Warning: T extension's canonical not fully implemented.
         # Extensions ordered alphabetically by singleton.
         $.language.canonical
-                ~ ('-' ~ $.script.canonical unless $.script.type eq 'blank')
-                ~ ('-' ~ $.region.canonical unless $.region.type eq 'blank')
-                ~ @.variants.map('-' ~ *.canonical).sort.join
-                ~ @.extensions.sort(*.singleton).map('-' ~ *.canonical).join
-                ~ ('-x' if @.privateuses)
-                ~ @.privateuses.map('-' ~ *.code).join; # don't sort privateuses
+                ~ ('-' ~ $!script.canonical unless $!script.type eq 'blank')
+                ~ ('-' ~ $!region.canonical unless $!region.type eq 'blank')
+                ~ @!variants.map('-' ~ *.canonical).sort.join
+                ~ @!extensions.sort(*.singleton).map('-' ~ *.canonical).join
+                ~ ('-x' if @!privateuses)
+                ~ @!privateuses.map('-' ~ *.code).join; # don't sort privateuses
     }
     method LanguageTagFilter (:$extendable = False) {
         LanguageTagFilter.new(
@@ -214,7 +213,7 @@ class LanguageTag is export {
         # need to distinguish them as they are all valid.  Interestingly, although
         # in many places Qaai is listed as deprecated, in the formal IANA registry, it
         # is *not* so designated.
-        method type is DEPRECATED('.valid to check if registered') {
+        method type { # TODO is DEPRECATED('.valid to check if registered') {
             given $!code {
                 when %scripts{$_}:exists            { return 'regular'      }
                 when ''                             { return 'blank'        }

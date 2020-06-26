@@ -288,7 +288,7 @@ OmaniArabic,acx
 CypriotArabic,acy
 Acheron,acz
 Adangme,ada
-Adabe,adb
+Atauran,adb
 Lidzonka,add
 Dzodinka,add
 Adele,ade
@@ -521,7 +521,6 @@ Andarum,aod
 AngalEnen,aoe
 Bragat,aof
 Angoram,aog
-Arma,aoh
 Anindilyakwa,aoi
 Mufian,aoj
 Arhö,aok
@@ -732,7 +731,6 @@ CentralAymara,ayr
 SorsogonAyta,ays
 MagbukunAyta,ayt
 Ayu,ayu
-TayabasAyta,ayy
 MaiBrat,ayz
 Azha,aza
 SouthAzerbaijani,azb
@@ -793,7 +791,6 @@ Karnai,bbv
 Baba,bbw
 Bubia,bbx
 Befang,bby
-BabaliaCreoleArabic,bbz
 CentralBai,bca
 BainoukSamik,bcb
 SouthernBalochi,bcc
@@ -1125,7 +1122,6 @@ Buamu,box
 BodoCentralAfricanRepublic,boy
 TiéyaxoBozo,boz
 Daakaka,bpa
-Barbacoas,bpb
 BandaBanda,bpd
 Bonggo,bpg
 Botlikh,bph
@@ -1179,7 +1175,7 @@ Braj,bra
 Lave,brb
 BerbiceCreoleDutch,brc
 Baraamu,brd
-Bera,brf
+Bira,brf
 Baure,brg
 Brahui,brh
 Mokpwe,bri
@@ -1448,7 +1444,6 @@ CandoshiShapra,cbu
 Cacua,cbv
 Kinabalian,cbw
 Carabayo,cby
-Cauca,cca
 Chamicuro,ccc
 CafundoCreole,ccd
 Chopi,cce
@@ -1467,7 +1462,6 @@ ChadicLanguages,cdc
 CaddoanLanguages,cdd
 Chenchu,cde
 Chiru,cdf
-Chamari,cdg
 Chambeali,cdh
 Chodri,cdi
 Churahi,cdj
@@ -1545,6 +1539,7 @@ JinyuChinese,cjy
 CentralKurdish,ckb
 Chak,ckh
 Cibak,ckl
+Chakavian,ckm
 KaangChin,ckn
 Anufo,cko
 Kajakse,ckq
@@ -1593,6 +1588,8 @@ Asháninka,cni
 KhumiChin,cnk
 LalanaChinantec,cnl
 Con,cno
+NorthernPingChinese,cnp
+NorthernPinghua,cnp
 Montenegrin,cnr
 CentralAsmat,cns
 TepetotutlaChinantec,cnt
@@ -1680,6 +1677,8 @@ CentralSierraMiwok,csm
 ColombianSignLanguage,csn
 SochiapamChinantec,cso
 SochiapanChinantec,cso
+SouthernPingChinese,csp
+SouthernPinghua,csp
 CroatiaSignLanguage,csq
 CostaRicanSignLanguage,csr
 SouthernOhlone,css
@@ -1830,9 +1829,9 @@ Dongolawi,dgl
 Dagoman,dgn
 Dogri,dgo
 Dogrib,dgr
+Tłı̨chǫ,dgr
 Dogoso,dgs
 NdraNgith,dgt
-Degaru,dgu
 Daungwurrung,dgw
 Doghoro,dgx
 Daga,dgz
@@ -1910,6 +1909,7 @@ MomboDogon,dmb
 Gavak,dmc
 MadhiMadhi,dmd
 Dugwor,dme
+Medefaidrin,dmf
 UpperKinabatangan,dmg
 Domaaki,dmk
 Dameli,dml
@@ -1974,7 +1974,6 @@ Paakantyi,drl
 WestDamar,drn
 DaroMatuMelanau,dro
 Dura,drq
-Dororo,drr
 Gedeo,drs
 Drents,drt
 Rukai,dru
@@ -2030,6 +2029,7 @@ DicamayAgta,duy
 DuliGey,duz
 Duau,dva
 Diri,dwa
+DawikKui,dwk
 Dawro,dwr
 DuttonWorldSpeedwords,dws
 Dhuwal,dwu
@@ -2054,6 +2054,7 @@ Dazaga,dzg
 Dzalakha,dzl
 Dzando,dzn
 Karenggapa,eaa
+Beginci,ebc
 Ebughu,ebg
 EasternBontok,ebk
 TekeEbo,ebo
@@ -2078,7 +2079,6 @@ Eitiep,eit
 Askopan,eiv
 Ejamat,eja
 Ekajuk,eka
-EasternKarnic,ekc
 Ekit,eke
 Ekari,ekg
 Eki,eki
@@ -2203,6 +2203,7 @@ MaasinaFulfulde,ffm
 Fongoro,fgr
 Nobiin,fia
 Fyer,fie
+Faifi,fif
 Filipino,fil
 Pilipino,fil
 Fipa,fip
@@ -2334,6 +2335,7 @@ Gude,gde
 GudufGava,gdf
 GaDang,gdg
 Gadjerawang,gdh
+Gajirrabeng,gdh
 Gundi,gdi
 Gurdjar,gdj
 Gadang,gdk
@@ -2351,6 +2353,7 @@ Geruma,gea
 Kire,geb
 GbolooGrebo,gec
 Gade,ged
+Gerai,gef
 Gengle,geg
 HutteriteGerman,geh
 Hutterisch,geh
@@ -2429,7 +2432,6 @@ BonGula,glc
 Nanai,gld
 NorthwestPashai,glh
 NorthwestPashayi,glh
-Guliguli,gli
 GulaIro,glj
 Gilaki,glk
 Garlali,gll
@@ -2448,6 +2450,8 @@ MiddleLowGerman,gml
 GbayaMbodomo,gmm
 Gimnime,gmn
 NorthGermanicLanguages,gmq
+Mirning,gmr
+Mirniny,gmr
 Gumalu,gmu
 Gamo,gmv
 WestGermanicLanguages,gmw
@@ -2581,6 +2585,7 @@ Gumawana,gvs
 Guyani,gvy
 Mbato,gwa
 Gwa,gwb
+Gawri,gwc
 Kalami,gwc
 Gawwada,gwd
 Gweno,gwe
@@ -2730,6 +2735,7 @@ SinicizedMiao,hmz
 MinaCameroon,hna
 SouthernHindko,hnd
 Chhattisgarhi,hne
+Hungu,hng
 ǁAni,hnh
 Hani,hni
 HmongNjua,hnj
@@ -2788,6 +2794,7 @@ Hitu,htu
 MiddleHittite,htx
 Huambisa,hub
 ǂHua,huc
+ǂʼAmkhoe,huc
 Huaulu,hud
 SanFranciscoDelMarHuave,hue
 Humene,huf
@@ -3137,6 +3144,7 @@ Jiarong,jya
 JudeoYemeniArabic,jye
 Jaya,jyy
 KaraKalpak,kaa
+Karakalpak,kaa
 Kabyle,kab
 Kachin,kac
 Jingpho,kac
@@ -3368,7 +3376,6 @@ Kanjobal,kjb
 CoastalKonjo,kjc
 SouthernKiwai,kjd
 Kisar,kje
-Khalaj,kjf
 Khmu,kjg
 Khakas,kjh
 Zabana,kji
@@ -3405,7 +3412,7 @@ KonKeu,kkn
 Karko,kko
 Gugubera,kkp
 KokoBera,kkp
-Kaiku,kkq
+Kaeku,kkq
 KirBalar,kkr
 Giiwo,kks
 Koi,kkt
@@ -3425,7 +3432,7 @@ Kendeje,klf
 Tagakaulo,klg
 Weliki,klh
 Kalumpang,kli
-TurkicKhalaj,klj
+Khalaj,klj
 KonoNigeria,klk
 KaganKalagan,kll
 Migum,klm
@@ -3652,6 +3659,7 @@ WesternKatu,kuf
 Kupa,kug
 Kushi,kuh
 KuikúroKalapálo,kui
+Kalapalo,kui
 Kuria,kuj
 Kepo,kuk
 Kulere,kul
@@ -3732,7 +3740,6 @@ KaroEthiopia,kxh
 KeningauMurut,kxi
 Kulfa,kxj
 ZayeinKaren,kxk
-NepaliKurux,kxl
 NorthernKhmer,kxm
 KanowitTanjongMelanau,kxn
 Kanoé,kxo
@@ -3741,7 +3748,6 @@ SmärkyKanum,kxq
 KoroPapuaNewGuinea,kxr
 Kangjia,kxs
 Koiwat,kxt
-KuiIndia,kxu
 Kuvi,kxv
 Konai,kxw
 Likuba,kxx
@@ -4012,7 +4018,6 @@ Lomaiviti,lmv
 LakeMiwok,lmw
 Laimbue,lmx
 Lamboya,lmy
-Lumbee,lmz
 Langbashe,lna
 Mbalanhu,lnb
 Lundayeh,lnd
@@ -4503,6 +4508,7 @@ Moni,mnz
 Mwan,moa
 Mocoví,moc
 Mobilian,mod
+Innu,moe
 Montagnais,moe
 Mongondow,mog
 Mohawk,moh
@@ -5171,6 +5177,7 @@ Narua,nru
 Ngurmbur,nrx
 Lala,nrz
 SangtamNaga,nsa
+LowerNossob,nsb
 Nshi,nsc
 SouthernNisu,nsd
 Nsenga,nse
@@ -5266,7 +5273,6 @@ Ngawun,nxn
 Ndambomo,nxo
 Naxi,nxq
 Ninggerum,nxr
-Narau,nxu
 Nafri,nxx
 Nyangbo,nyb
 NyangaLi,nyc
@@ -5563,7 +5569,7 @@ Petats,pex
 Petjo,pey
 EasternPenan,pez
 Pááfang,pfa
-Peere,pfe
+Pere,pfe
 Pfaelzisch,pfl
 SudaneseCreoleArabic,pga
 Gāndhārī,pgd
@@ -5644,7 +5650,6 @@ KohistaniShina,plk
 ShwePalaung,pll
 Palenquero,pln
 OlutaPopoluca,plo
-Palpa,plp
 Palaic,plq
 PalakaSenoufo,plr
 SanMarcosTlacoyalcoPopoloca,pls
@@ -6135,10 +6140,10 @@ SouthernKurdish,sdh
 Suundi,sdj
 SosKundi,sdk
 SaudiArabianSignLanguage,sdl
-Semandang,sdm
 GallureseSardinian,sdn
 BukarSadungBidayuh,sdo
 Sherdukpen,sdp
+Semandang,sdq
 OraonSadri,sdr
 Sened,sds
 Shuadit,sdt
@@ -6602,7 +6607,6 @@ Tamki,tax
 Atayal,tay
 Tocho,taz
 Aikanã,tba
-Tapeba,tbb
 Takia,tbc
 KakiAe,tbd
 Tanimbili,tbe
@@ -6745,7 +6749,6 @@ Thakali,ths
 Tahltan,tht
 Thuri,thu
 TahaggartTamahaq,thv
-Thudam,thw
 Tha,thy
 TayartTamajeq,thz
 TidikeltTamazight,tia
@@ -7140,6 +7143,7 @@ Tanjijili,uji
 Kaburi,uka
 Ukuriguma,ukg
 Ukhwejo,ukh
+KuiIndia,uki
 MuakSaAak,ukk
 UkrainianSignLanguage,ukl
 UkpeBayobiri,ukp
@@ -7147,6 +7151,7 @@ Ukwa,ukq
 UrubúKaaporSignLanguage,uks
 KaaporSignLanguage,uks
 Ukue,uku
+Kuku,ukv
 UkwuaniAbohNdoni,ukw
 KuukYak,uky
 Fungwa,ula
@@ -7449,6 +7454,7 @@ Walio,wla
 MwaliComorian,wlc
 Wolane,wle
 Kunbarlang,wlg
+Welaun,wlh
 Waioli,wli
 Wailaki,wlk
 WaliSudan,wll
@@ -7743,6 +7749,7 @@ MiddleMongolian,xng
 Kuanhua,xnh
 Ngarigu,xni
 Nganakarti,xnk
+Ngumbarl,xnm
 NorthernKankanay,xnn
 AngloNorman,xno
 Kangri,xnr
@@ -7764,12 +7771,20 @@ Kopar,xop
 Korubo,xor
 Kowaki,xow
 Pirriya,xpa
+NortheasternTasmanian,xpb
+Pyemmairrener,xpb
 Pecheneg,xpc
+OysterBayTasmanian,xpd
 LiberiaKpelle,xpe
+SoutheastTasmanian,xpf
+Nuenonne,xpf
 Phrygian,xpg
+NorthMidlandsTasmanian,xph
+Tyerrenoterpanner,xph
 Pictish,xpi
 Mpalitjanh,xpj
 KulinaPano,xpk
+PortSorellTasmanian,xpl
 Pumpokol,xpm
 Kapinawá,xpn
 Pochutec,xpo
@@ -7779,7 +7794,14 @@ Parthian,xpr
 Pisidian,xps
 Punthamara,xpt
 Punic,xpu
+NorthernTasmanian,xpv
+Tommeginne,xpv
+NorthwesternTasmanian,xpw
+Peerapper,xpw
+SouthwesternTasmanian,xpx
+Toogee,xpx
 Puyo,xpy
+BrunyIslandTasmanian,xpz
 Karakhanid,xqa
 Qatabanian,xqt
 Krahô,xra
@@ -7790,7 +7812,6 @@ Minang,xrg
 KrikatiTimbira,xri
 Armazic,xrm
 Arin,xrn
-Karranga,xrq
 Raetic,xrr
 AranamaTamique,xrt
 Marriammu,xru
@@ -7836,13 +7857,13 @@ CuyamecalcoMixtec,xtu
 Thawa,xtv
 Tawandê,xtw
 YoloxochitlMixtec,xty
-Tasmanian,xtz
 AluKurumba,xua
 BettaKurumba,xub
 Umiida,xud
 Kunigami,xug
 JennuKurumba,xuj
 Ngunawal,xul
+Nunukul,xul
 Umbrian,xum
 Unggaranggu,xun
 Kuo,xuo
@@ -8150,6 +8171,7 @@ XadaniZapotec,zax
 ZayseZergulla,zay
 Zaysete,zay
 Zari,zaz
+Balaibalan,zba
 CentralBerawan,zbc
 EastBerawan,zbe
 Blissymbols,zbl
@@ -8182,7 +8204,6 @@ Zimakani,zik
 Zialo,zil
 Mesme,zim
 Zinza,zin
-Ziriya,zir
 Zigula,ziw
 Zizilivakan,ziz
 Kaimbulawa,zka

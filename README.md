@@ -122,6 +122,9 @@ capitalization.
 
 # Version history
 
+- 0.9.1
+  - Updated to IANA subtag registry dated 2020-06-10
+  - Temporarily removed `is DEPRECATED` from `LanguageTag::Script::type` until more extensive recoding can be done.
 - 0.9.0
   - Preliminary Wildcard support
   - Updated to IANA subtag registry dated 2019-09-16

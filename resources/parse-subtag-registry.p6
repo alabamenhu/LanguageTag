@@ -1,8 +1,15 @@
-#    #### ######  ###   ####   ##
-#   ##      ##   ## ##  ## ##  ##
-#   #####   ##   ## ##  ####   ##   Read the notices below before
-#      ##   ##   ## ##  ##          making any changes.
-#   ####    ##    ###   ##     ##
+
+#      ▄█▀▀▀█▄███▀▀██▀▀███ ▄▄█▀▀██▄ ▀███▀▀▀██▄
+#     ▄██    ▀█▀   ██   ▀███▀    ▀██▄ ██   ▀██▄
+#     ▀███▄        ██    ██▀      ▀██ ██   ▄██
+#       ▀█████▄    ██    ██        ██ ███████
+#     ▄     ▀██    ██    ██▄      ▄██ ██
+#     ██     ██    ██    ▀██▄    ▄██▀ ██
+#     █▀█████▀   ▄████▄    ▀▀████▀▀ ▄████▄
+#
+# Read the notices below before making any changes
+#
+#
 #
 # WARNING: If changing this file (in particular what is output), you
 #          MUST adjust the file in Subtag-Registry.pm6 to match.
