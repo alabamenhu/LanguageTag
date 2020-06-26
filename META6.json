@@ -47,7 +47,7 @@
     "International",
     "Internationalization"
   ],
-  "api": 2,
+  "api": 1,
   "source-url": "git://github.com/alabamenhu/bcp47.git",
   "raku": "6.*"
 }
