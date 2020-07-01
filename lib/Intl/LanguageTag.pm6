@@ -56,7 +56,7 @@ class LanguageTag is export {
                 language    =>  %base<language>,
                 script      => (%base<script>  // Script.new(:code(''))),
                 region      => (%base<region>  // Region.new(:code(''))),
-                variants    =>  %base<variants>,
+                variants    =>  %base<variants><>,
                 extensions  =>  %base<extensions><>,
                 privateuses =>  @privateuses
     }

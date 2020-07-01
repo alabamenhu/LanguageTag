@@ -5,8 +5,7 @@ The change was done to make it more obvious what its purpose is and because it
 had begun to integrate more than just BCP-47.  For the time being, it will continue
 to `provide` under the old name to preserve backwards compatibility, but code should
 be updated to reference the new name.  If there are problems with it under the old
-name, please file a ticket.  Because of other internal reorganization, the API level
-was increased to 2.
+name, please file a ticket. 
 
 # Example
 
