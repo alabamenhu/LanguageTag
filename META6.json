@@ -1,7 +1,7 @@
 {
   "name": "Intl::LanguageTag",
   "description": "A module for working with BCP-47 type language tags",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "perl": "6.*",
   "authors": [
     "Matthew ‘Matéu’ Stephen STUCKWISCH <mateu@softastur.com>"
