@@ -10,7 +10,7 @@ unit module LangTag; # Dummy name, only because LanguageTag is also the main cla
 use Intl::LanguageTag::X;
 
 # STUBBED CLASSES
-class LanguageTagFilter { … }
+class LanguageTagFilter { … }
 class LanguageTagFilterActions { … }
 
 =begin pod
@@ -25,14 +25,14 @@ The C<LanguageTag> class
 class LanguageTag is export {
 
     # Stub the inner classes
-    class Language           { … }
-    class IrregularLanguage  { … }
-    class Script             { … }
-    class Region             { … }
-    class Variant            { … }
-    class Extension          { … }
-    class PrivateUse         { … }
-    class LanguageTagActions { … }
+    class Language           { … }
+    class IrregularLanguage  { … }
+    class Script             { … }
+    class Region             { … }
+    class Variant            { … }
+    class Extension          { … }
+    class PrivateUse         { … }
+    class LanguageTagActions { … }
 
     has Language   $.language;     #= The language of the tag
     has Script     $.script;       #= The script of the tag
@@ -129,7 +129,7 @@ class LanguageTag is export {
 
         has $.code is rw;
 
-        multi method gist (::?CLASS:D:) { '[Language:' ~ $!code ~ ']' }
+        multi method gist (::?CLASS:D:) { '[Language:' ~ $!code ~ ']' }
         multi method gist (::?CLASS:U:) { '(Language)'                }
 
         #| A canonical language subtag is lower-cased
@@ -144,7 +144,7 @@ class LanguageTag is export {
             # …is sufficient for validation
         }
 
-        method Str { $!code }
+        method Str { $!code }
 
         # The following text and method below are deprecated until a new API can be
         # determined to provide this information
@@ -154,8 +154,8 @@ class LanguageTag is export {
         # be so discriminating.
         method type {
             given $!code {
-                when %languages{$_}:exists            { return 'regular'      }
-                when %deprecated-languages{$_}:exists { return 'deprecated'   }
+                when %languages{$_}:exists            { return 'regular'      }
+                when %deprecated-languages{$_}:exists { return 'deprecated'   }
                 when ''                               { return 'blank'        }
                 default                               { return 'unregistered' }
             }
@@ -165,7 +165,7 @@ class LanguageTag is export {
 
     class IrregularLanguage is Language {
         has $.code is rw;
-        multi method gist (::?CLASS:D:) { '[Irr.Lang.:' ~ $!code ~ ']' }
+        multi method gist (::?CLASS:D:) { '[Irr.Lang.:' ~ $!code ~ ']' }
         multi method gist (::?CLASS:U:) { '[Irr.Lang.]'                }
         # The canonical form for languages is to be lower-cased
         # Note that this method SHOULD cause failure for most codes, because most of
@@ -194,19 +194,19 @@ class LanguageTag is export {
 
         has ScriptStr $.code is rw;
 
-        multi method gist (::?CLASS:D:) { '[Script:' ~ $!code ~ ']' }
+        multi method gist (::?CLASS:D:) { '[Script:' ~ $!code ~ ']' }
         multi method gist (::?CLASS:U:) { '[Script]'                }
 
 
         #| A script is canonical is has an initial cap and three lowercase
         method canonical (::?CLASS:D: --> Str) { $!code.tclc }
         #| A canonical script is has an initial cap and three lowercase
-        method canonicalize (::?CLASS:D: --> Bool) { $!code = $!code.tclc }
+        method canonicalize (::?CLASS:D: --> Bool) { $!code = $!code.tclc }
 
         #| A script is valid if it exists in the IANA database
         method valid (::?CLASS:D: --> Bool) { %scripts{$!code.tclc}:exists }
         #| Scripts will be invalid if they don't exist
-        method validate { }
+        method validate { }
 
         # There are a few special script types, namely the private-use Qa* and the ones
         # with special meaning Zmth, Zsye, Zsym, Zxxx and Zzzz.  At the moment, no
@@ -229,7 +229,7 @@ class LanguageTag is export {
         use Intl::LanguageTag::Subtag-Registry :regions;
         has $.code is rw;
 
-        multi method gist (::?CLASS:D:) { '[Region:' ~ $.code ~ ']' }
+        multi method gist (::?CLASS:D:) { '[Region:' ~ $.code ~ ']' }
         multi method gist (::?CLASS:U:) { '[Region]'                }
 
         # The canonical form for a region code is all caps (except numbers, which
@@ -260,7 +260,7 @@ class LanguageTag is export {
 
         has $.code is rw;
 
-        multi method gist (::?CLASS:D:) { '[Variant:' ~ $!code ~ ']' }
+        multi method gist (::?CLASS:D:) { '[Variant:' ~ $!code ~ ']' }
         multi method gist (::?CLASS:U:) { '[Variant]'                }
 
         method canonical { $!code.lc }
@@ -313,9 +313,9 @@ class LanguageTag is export {
             #    }
             #}
         }
-        multi method gist (::?CLASS:D:) { '[Extension:' ~ $!singleton ~ ']' }
+        multi method gist (::?CLASS:D:) { '[Extension:' ~ $!singleton ~ ']' }
         multi method gist (::?CLASS:U:) { '(Extension)'                     }
-        method canonical { $!singleton ~ '-' ~ @!subtags.join('-') }
+        method canonical { $!singleton ~ '-' ~ @!subtags.join('-') }
         method type {
             'unregistered'
         }
@@ -364,6 +364,8 @@ class LanguageTag is export {
         }
     }
 
+    method COERCE(Str $string) { self.new: $string }
+
 }
 
 
@@ -374,10 +376,10 @@ class LanguageTagFilter is export {
     ########################################
     role Wildcard {
         method code { '*' }
-        method type { 'wildcard' }
+        method type { 'wildcard' }
     }
-    class WildcardLanguage is LanguageTag::Language does Wildcard { method gist { '[Language:*]' } }
-    class WildcardScript   is LanguageTag::Script   does Wildcard { method gist { '[Script:*]'   } }
+    class WildcardLanguage is LanguageTag::Language does Wildcard { method gist { '[Language:*]' } }
+    class WildcardScript   is LanguageTag::Script   does Wildcard { method gist { '[Script:*]'   } }
     class WildcardRegion   is LanguageTag::Region   does Wildcard { method gist { '[Region:*]'   } }
     class WildcardVariant  is LanguageTag::Variant  does Wildcard { method gist { '[Variant:*]'  } }
 
@@ -542,7 +544,7 @@ class TransformedContent is LanguageTag::Extension does Associative {
     #                     https://unicode-org.atlassian.net/browse/CLDR-13370
     # Filed by yours truly (regularly check the status to update support)
 
-    method singleton { 't' }
+    method singleton { 't' }
     has    @.subtags;
     has    $.origin;
     has    @.fields = ();  # array to maintain input order, canonical is as entered
@@ -550,7 +552,7 @@ class TransformedContent is LanguageTag::Extension does Associative {
     class Field {
         has Str $.id;        #= ID matches [a..z][0..9]
         has Str @.tags = (); #= Tags are order sensitive
-        method has-date { @!tags.tail ~~ /<[0..9]>**4[<[0..9]>**2]**0..2/ }
+        method has-date { @!tags.tail ~~ /<[0..9]>**4[<[0..9]>**2]**0..2/ }
         # in the canonization process, they should not be sorted.
         multi method gist (::?CLASS:D:) { '[' ~ $!id ~ ':' ~ @!tags.join(',') ~ ']' }
         multi method gist (::?CLASS:U:) { '[Field]' }
