@@ -120,7 +120,10 @@ form (but placing -t before -u) without adjusting internal order or
 capitalization.
 
 # Version history
-
+- 0.10.0
+  - Update to IANA subtag registry dated 2020-12-18
+  - Added a `COERCE(Str)` method for Raku's new coercion protocol.
+  - **Final update** before near total reworking of the innards for better performance, code cleanliness/maintainability, etc.
 - 0.9.1
   - Updated to IANA subtag registry dated 2020-06-10
   - Temporarily removed `is DEPRECATED` from `LanguageTag::Script::type` until more extensive recoding can be done.
