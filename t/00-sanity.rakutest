@@ -1,0 +1,24 @@
+=begin pod
+This test checks to make sure that regardless of how one C<use>s this module
+the exact same class is being used.
+=end pod
+
+use Intl::LanguageTag;
+use Test;
+
+my $short;
+{
+    use Intl::LanguageTag;
+    $short := LanguageTag;
+}
+
+my $long;
+{
+    use Intl::LanguageTag::BCP47;
+    $long := LanguageTag::BCP47;
+}
+
+is ($short =:= $long), True;
+
+
+done-testing;

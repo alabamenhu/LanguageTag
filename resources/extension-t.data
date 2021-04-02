@@ -1,7 +1,0 @@
-i0:handwrit,und,wubi,pinyin
-s0:publish,ascii,zawgyi,accents,npinyin,hex
-d0:nfkc,npinyin,nfd,lower,casefold,nfkd,digit,title,hwidth,hex,upper,fcd,null,publish,remove,zawgyi,charname,nfc,fcc,fwidth,accents,ascii
-t0:und
-k0:qwertz,viqr,101key,qwerty,osx,legacy,azerty,ta99,lt1205,und,600dpi,lt1582,isiri,el220,windows,dvorakl,googlevk,chromeos,colemak,el319,102key,android,var,dvorakr,extended,patta,768dpi,dvorak,nutaaq
-m0:ungegn,mns,iso,css,unicode,mcst,c11,bgn,xml,xml10,din,buckwalt,plain,satts,gost,prprname,perl,java,percent,alaloc
-h0:hybrid

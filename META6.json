@@ -1,50 +1,36 @@
 {
   "name": "Intl::LanguageTag",
-  "description": "A module for working with BCP-47 type language tags",
-  "version": "0.10.0",
+  "description": "A module for working with BCP 47 language tags",
+  "version": "0.11.0β",
   "perl": "6.*",
+  "raku": "6.*",
   "authors": [
-    "Matthew ‘Matéu’ Stephen STUCKWISCH <mateu@softastur.com>"
+    "Matthew Stephen Stuckwisch"
   ],
   "auth": "github:alabamenhu",
-  "depends": [],
+  "depends": ["Intl::LanguageTaggish"],
   "build-depends": [],
-  "test-depends": [],
+  "test-depends": ["Test"],
   "provides": {
-    "Intl::BCP47": "lib/Intl/LanguageTag.pm6",
-    "Intl::LanguageTag": "lib/Intl/LanguageTag.pm6",
-    "Intl::LanguageTag::ExtensionRegistry": "lib/Intl/LanguageTag/ExtensionRegistry.pm6",
-    "Intl::LanguageTag::Filter-Grammar": "lib/Intl/LanguageTag/Filter-Grammar.pm6",
-    "Intl::LanguageTag::Grammar": "lib/Intl/LanguageTag/Grammar.pm6",
-    "Intl::LanguageTag::Subtag-Registry": "lib/Intl/LanguageTag/Subtag-Registry.pm6",
-    "Intl::LanguageTag::X": "lib/Intl/LanguageTag/X.pm6"
+    "Intl::LanguageTag::BCP47": "lib/Intl/LanguageTag/BCP47.rakumod",
+    "Intl::LanguageTag": "lib/Intl/LanguageTag.rakumod"
   },
   "resources": [
-    "enum/languages.data",
-    "enum/regions.data",
-    "enum/scripts.data",
-    "enum/variants.data",
-    "extlangs.data",
-    "grandfathered.data",
-    "languages.data",
-    "extension-t.data",
-    "extension-u.data",
-    "redundancies.data",
-    "regions.data",
-    "scripts.data",
-    "variants.data"
+    "language-subtag-registry",
+    "languages-deprecated",
+    "languages-macro",
+    "languages-preferred",
+    "languages-script",
+    "languages-valid",
+    "regions-deprecated",
+    "regions-preferred",
+    "regions-valid",
+    "scripts-deprecated",
+    "scripts-valid",
+    "variants-deprecated",
+    "variants-prefixes",
+    "variants-valid"
   ],
   "license": "Artistic-2.0",
-  "tags": [
-    "BCP47",
-    "Language",
-    "Tag",
-    "Localization",
-    "Locale",
-    "International",
-    "Internationalization"
-  ],
-  "api": 1,
-  "source-url": "git://github.com/alabamenhu/bcp47.git",
-  "raku": "6.*"
+  "source-url": "git://github.com/alabamenhu/LanguageTag.git"
 }

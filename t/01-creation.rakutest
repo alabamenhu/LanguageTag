@@ -1,0 +1,11 @@
+use Intl::LanguageTag;
+use Test;
+#say LanguageTag.new: 'en-US';
+my $a =  LanguageTag.new: 'en-Latn-oxford';
+
+is $a.language, 'en';
+is $a.script, 'Latn';
+is $a.region, '';
+is $a.variants[0], 'oxford';
+
+done-testing;

@@ -1,125 +1,88 @@
-# NOTICE
+# Intl::LanguageTag
 
-This module recently changed its named from `Intl::BCP47` to `Intl::LanguageTag`.
-The change was done to make it more obvious what its purpose is and because it
-had begun to integrate more than just BCP-47.  For the time being, it will continue
-to `provide` under the old name to preserve backwards compatibility, but code should
-be updated to reference the new name.  If there are problems with it under the old
-name, please file a ticket.
+**Warning: v0.11.0 is *mostly* backwards compatible.  The following is not currently supported from v0.10-:**
+  * Heavy extensions introspection
+  * Creation by means other than a `Str`
+  * Enums
+  * Grandfathered / legacy tags
+  * `LanguageTagFilter` objects
+  
+Support for all will be addressed in forthcoming updates, however extensions introspection may differ in structure.
 
-# Example
+## Usage
 
-A simple Raku module for processing BCP-74-style language tags.
+```raku
+use Intl::LanguageTag;                  # ← Imports as 'LanguageTag'
+use Intl::LanguageTag::BCP-47;          # ← Imports as 'LanguageTag::BCP-47'
+use Intl::LanguageTag::BCP-47 <enums>;  # ← Include enums
+use Intl::LanguageTag::BCP-47 <utils>;  # ← Include lookup-language-tags
+                                        #       and filter-language-tags subs
 
-    use Intl::LanguageTag;
+# Create a new LanguageTag from a string
+LanguageTag.new: 'en-US';
+```
 
-    my $tag = LanguageTag.new("oc-Latn-ES-aranes-t-en-UK");
-    say $tag.language.code;   #  ↪︎ "oc"
-    say $tag.variant[0].code; #  ↪︎ "aranese"
+Note that language tags are canonicalized upon creation.  
+This is done in accordance with BCP 47, RFC 6067, RFC 6497, and TR 35 and helps to guarantee value typing mechanics.
 
-    my $not-pretty-tag = LanguageTag.new("eN-lATn-Us-u-ca-gregory-t-es-MX");
-    say $not-pretty-tag.Str;       #  ↪︎ "eN-lATn-Us-u-ca-gregory-t-es-MX"
-    say $not-pretty-tag.canonical; #  ↪︎ "en-Latn-US-t-es-MX-u-ca-gregory"
+## Which to `use`
+Most of the time, `use Intl::LanguageTag` is what you will want (the BCP-47 tag type is set as the default for a reason).
+Prefer `use Intl::LanguageTag::BCP-47` when interacting with other language tag types in the same scope to avoid a symbol collision.
 
-You can also filter a set of codes by passing in a tag-like filter:
+## Features
 
-    my @tags = (
-      LanguageTag.new('es-ES'),
-      LanguageTag.new('es-MX'),
-      LanguageTag.new('es-Latn-GQ'),
-      LanguageTag.new('pt-GQ'),
-    );
+Everything is value typed!  This means you can easily use them in sets, bags, and mixes and routines like `unique` will operate as you'd expect.
 
-    filter-language-tags: @tags, 'es';   #  ↪︎ [es-ES], [es-MX], [es-GQ]
-    filter-language-tags: @tags, '*-GQ'; #  ↪︎ [es-GQ], [pt-GQ]
+Once you've created a language tag, you have the following simple methods to introspect it.
 
-Or to check a single value, you can also smart match on a filter object:
+  * **`.language`**  
+  The language code.
+  * **`.script`**  
+  The script used, will be omitted if the same as the default script.
+  * **`.region`**  
+  The region code
+  * **`.variants`**  
+  The variant codes. This object provides positional access to its subtags.
+  * **`.extensions`**  
+  Any extensions.  This object provides hashy access (currently recognizing `<t>` and `<u>`)
+  * **`.private-use`**  
+  Any private use tags. This object provides positional access to its subtags.
+  
+Each of the above will stringify into the exact code, but also have additional methods.
+For instance, `.language.default-script` tells you what the default script for the language is.
+These will be documented more in a future release.
 
-    my $filter = LanguageTagFilter('*-Latf'); # 'in Fraktur script'
+## Utility functions
 
-    LanguageTag.new('de-Latf-DE') ~~ $filter # ↪︎ True
-    LanguageTag.new('de-Latn-AU') ~~ $filter # ↪︎ False
+If you include `<utils>` in your use statement, you will have access to two subs to aid working with language tags.
+They are the following:
 
-The filtering is based on RFC4647 and is what you might expect in a HTTP request
-header.  However, for the ambitious, the special LanguageTagFilter object
-provides for a good more flexibility and power than what you get from the basic
-`.new(Str)`.
+ * **`sub filter-language-tags(@source, $filter, :$basic = False)`**  
+ This performs a 'filter' operation.  The source is a list of BCP47 objects, and the filter is also a BCP47. 
+ When in basic mode, all source tags that are identical to, or begin with tags identical to the filter are returned.
+ * **`sub lookup-language-tags(@available, @preferred, $default)`**  
+ Performs a 'lookup' operation to return an optimally matching language tag. 
+ A common usage might be in an HTML server to receive the client's `@preferred` languages and compare them
+ to the `@available` languages on the server.  The `.head` is the best language to use (or use `:single` if you have no need for backup choices).
+ 
+If the names of these functions is too verbose, you can alias them easily by doing `my &filter = filter-language-tags`.
 
-For situations where you need to find the best matching choice between two sets
-of languages (for example, you have a list of acceptable languages for a request
-and you have a list of languages the request can be fulfilled in), you'll want
-to use the lookup function.  (This is not the best name, perhaps, but it is
-the name used in RFC4647):
+## Todo
 
-    my @langs-user-wants  = <en-UK en-US en es-ES>.map({LanguageTag.new: $_});
-    my @langs-i-can-offer = <ar en en-US es>.map({LanguageTag.new: $_});
+In likely order of completion:
 
-    my $best = lookup-language-tag( @langs-i-can-offer, @langs-user-wants);
-    #  ↪︎ "en-US"
-    my @best = lookup-language-tags(@langs-i-can-offer, @langs-user-wants);
-    #  ↪︎ "en-US", "en", "es"
+  * Restore `enum` access
+  * Extlang and grandfathered tag support (via automatic canonicalization)
+  * Better introspection of extensions U / T
+  * Improve filtering by enabling wildcards in matches.
+  * More exhaustive test files
 
-The latter is particularly useful if you have situations where you may need fall
-backs, as it gives the top and most specific match first ending at the bottom
-and least specific match.  The method of ordering this is fairly complex, but be
-aware that if in the previous example, @langs-user-wants includes "en", "es" but
-@langs-i-can-offer only has "en-NZ", "en-US" and "es-CL" then no match will be
-provided.  This is because there is no way to know if the user wants Kiwi or
-American English, nor way to know if the user finds Chilean Spanish
-intelligible.
-
-# Enums
-
-If you don't like working directly with language codes, there are some enum values that
-you can access whose `.Str` is equivalent to the associated IANA code:
-
-    use Intl::LanguageTag :enums;    # or :language-enum or :region-enum
-
-    say Language::English;               #  ↪︎ "English"
-    say Language::English.Str;           #  ↪︎ "en"
-    say Region::SaoTomeAndPrincipe;      #  ↪︎ "SaoTomeAndPrincipe"
-    say Region::SaoTomeAndPrincipe.Str;  #  ↪︎ "ST"
-
-While not currently supported, eventually the goal is to enable construction of
-`LanguageTag` objects by passing the appropriate values like the following:
-
-    LanguageTag.new: Language::Portuguese,
-                     Script::Latin,
-                     Region::Mozambique,
-                     Variant::Orthography1990
-
-# Supported Standards
-
-Intl::BCP47 implements [BCP47](https://tools.ietf.org/html/bcp47), which defines
-the structure of language tags. It also implements
-[RFC4647](https://tools.ietf.org/html/rfc4647), which defines the nature of
-filtering and matching language tags.
-
-Preliminary support has been added for the implementations of RFC6067 and RFC6497
-(the Unicode Extensions for BCP 47, for subtags beginning with the singletons
-`-u` and `-t`).  There is still some work needed to better validate them and
-canonize them.  Currently, when accessing the subtag values for extension,
-you should use, e.g. `$langtag.extension<u>.mechanism.List`.  The `.List`
-method will be stable, but `.mechanism` (and other similar subtags) will not
-be guaranteed to be a list and may later be converted to a class or return special
-special `Proxy` objects.  `.List` will always return the subtags in list format.
-
-# To do
-
-Right now the module processes tags and provides handy .gist methods and basic
-support for canonicalization, but that can be improved.
-
-Future versions will provide more robust error handling (with warnings for
-deprecated or undefined tags), support for irregular grandfathered tags, support
-for preferred forms of both standard and grandfathered tags, and better
-documentation.
-
-Complete support will later be given for handling the two defined extensions
-because at the moment, their canonical forms merely parrot back the source
-form (but placing -t before -u) without adjusting internal order or
-capitalization.
-
-# Version history
+## Version history
+- 0.11.0
+  - Internal code overhaul for better long-term maintenance
+  - Added `LanguageTaggish` role
+  - Tags are now value types 
+  - All tags automatically canonicalize upon creation.
 - 0.10.0
   - Update to IANA subtag registry dated 2020-12-18
   - Added a `COERCE(Str)` method for Raku's new coercion protocol.
@@ -134,24 +97,22 @@ capitalization.
   - Preliminary semantic support for the T extension (U support still very early)
   - Preliminary creation of POD6 documentation (both inline and separate).
     - Particularly evident for the T extension
-
 - 0.8.5
   - Lookups available (no wildcard support yet)
-
- - 0.8.3
+- 0.8.3
    - Added initial support for parsing -t and -u extensions.
    - Added initial support for grandfathered tags
    - Fixed bug on parsing variants when no region code was present
    - Laid groundwork for various validation and canonicalization options (not fully implemented yet)
 
-# License
+## License
 
 All files (unless noted otherwise) can be used, modified and redistributed
 under the terms of the Artistic License Version 2. Examples (in the
 documentation, in tests or distributed as separate files) can be considered
 public domain.
 
-## “Unless noted otherwise”
+### “Unless noted otherwise”
 
 The resources directory "cldr" contains the contents of the "bcp47" folder
 of the Unicode CLDR data.  These files are copyrighted by Unicode, Inc., and
@@ -160,7 +121,6 @@ are available and distributed in accordance with
 
 The resources file “language-subtag-registry” is comes from the
 [IANA](https://www.iana.org/assignments/language-subtag-registry).  I do not
-currently distribute it because I am not aware of its exact license.  If it is
-available in a permissive license, please let me know and I will distribute
-a copy.  In the meantime, I will include a parsed and reduced version that holds
-only the necessary data in a more quickly parseable format.  
+currently distribute it because I am not aware of its exact license, but it 
+will be automatically downloaded when running the parsing script.  Its data
+is not needed for distribution, and so is gitignored
