@@ -1,5 +1,5 @@
 sub EXPORT(*@types) {
-    use Intl::LanguageTag::BCP47 <tools>;
+    use Intl::LanguageTag::BCP47 <tools t u>;
     my %export;
     %export<LanguageTag>                                = LanguageTag::BCP47;
     %export<LanguageTag::Extension::TransformedContent> = TransformedContent    if @types.any eq 'ext-t';
