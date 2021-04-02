@@ -39,6 +39,9 @@ class LanguageTag::BCP47 {
     multi method COERCE (LanguageTaggish:D $tag --> ::?CLASS ) {
         self.new: $tag.bcp47
     }
+    multi method COERCE (Str:D $tag --> ::?CLASS ) {
+        self.new: $tag
+    }
 
     method       bcp47 (            --> Str) {  self.Str       }
     multi method gist  (::?CLASS:D: --> Str) {  self.Str       }
