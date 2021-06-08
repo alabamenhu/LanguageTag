@@ -21,9 +21,9 @@ my LanguageTag::BCP47 @have = <en de jp ko ha fi>.map:                  { Langua
 
 my @choice;
 my $time = now;
-for ^10000 {
-    @choice[0] = lookup-language-tags @have, @want;
-}
+#for ^10000 {
+#    @choice[0] = lookup-language-tags @have, @want;
+#}
 say now - $time;
 
 
