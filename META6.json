@@ -16,7 +16,6 @@
     "Intl::LanguageTag": "lib/Intl/LanguageTag.rakumod"
   },
   "resources": [
-    "language-subtag-registry",
     "languages-deprecated",
     "languages-macro",
     "languages-preferred",
