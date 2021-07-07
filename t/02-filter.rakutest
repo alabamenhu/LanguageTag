@@ -19,14 +19,6 @@ use Test;
 my LanguageTag::BCP47 @want = <fr-FR fr-CA zh-Hant-CN-x-private1-private2 ja-JP>.map: { LanguageTag::BCP47.new: $_ };
 my LanguageTag::BCP47 @have = <en de jp ko ha fi>.map:                  { LanguageTag::BCP47.new: $_ };
 
-my @choice;
-my $time = now;
-#for ^10000 {
-#    @choice[0] = lookup-language-tags @have, @want;
-#}
-say now - $time;
-
-
 
 #`<<<
 ok my $filter-a = LanguageTagFilter.new('de-DE');
