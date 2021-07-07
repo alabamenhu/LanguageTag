@@ -1,7 +1,7 @@
 {
   "name": "Intl::LanguageTag",
   "description": "A module for working with BCP 47 language tags",
-  "version": "0.11.0β",
+  "version": "0.12",
   "perl": "6.*",
   "raku": "6.*",
   "authors": [
@@ -17,6 +17,7 @@
   },
   "resources": [
     "languages-deprecated",
+    "languages-extended",
     "languages-macro",
     "languages-preferred",
     "languages-script",
