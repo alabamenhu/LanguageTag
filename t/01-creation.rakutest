@@ -3,9 +3,47 @@ use Test;
 #say LanguageTag.new: 'en-US';
 my $a =  LanguageTag.new: 'en-Latn-oxford';
 
-is $a.language, 'en';
-is $a.script, 'Latn';
-is $a.region, '';
-is $a.variants[0], 'oxford';
+is $a.language,    'en',        'Basic language is correct';
+is $a.region,      '',          'Undefined region is empty string';
+is $a.variants[0], 'oxford',    'First variant is correct';
+is $a.script,      'Latn',      'Script is correct when requested';
+is $a.Str,         'en-oxford', 'Script does not show up when implied';
+
+my $b = LanguageTag.new: 'EN-ShAw-cA-newFoUnD-u-ca-grEgory-t-hE-ARab-eS-1800-x-foo';
+
+is $b.language,               'en',              'Language is capitalized canonically';
+is $b.region,                 'CA',              'Region is capitalized canonically';
+is $b.script,                 'Shaw',            'Script is capitalized canonically';
+is $b.variants[0],            'newfound',        'Variant is capitalized canonically';
+is $b.extensions<u>.calendar, 'gregory',         'Calendar is capitalized canonically';
+is $b.extensions<u>,          'ca-gregory',      'Unicode extension is stringified correctly';
+is $b.extensions<t>.origin,   'he-Arab-ES-1800', 'Transform origin extracts as canonical BCP-47';
+is $b.extensions<t>,          'he-arab-es-1800', 'Transform origin canonicalizes in T extension as lowercase';
+is $b.extensions,             't-he-arab-es-1800-u-ca-gregory', 'Extensions are canonically ordered/capitalized';
+is $b.Str, 'en-Shaw-CA-newfound-t-he-arab-es-1800-u-ca-gregory-x-foo', 'Full tag is canonicalized properly';
+
+my $c = LanguageTag.new: 'ca-valencia';
+my $d = LanguageTag.new: 'es-valencia';
+ok  $c.variants[0].valid-for-tag($c), 'Variant subtag "valencia" valid for Catalan prefix';
+nok $d.variants[0].valid-for-tag($d), 'Variant subtag "valencia" is not valid for Spanish prefix';
+
+my $e;
+my $e-warn = False;
+{
+    $e = LanguageTag.new: 'i-default';
+    CONTROL {
+        when CX::Warn { $e-warn = True; .resume }
+    }
+}
+is $e.language, 'i-default', 'Unmappable grandfathered tag stays grandfathered';
+ok $e-warn, 'Unmappable grandfathered tag issues warning';
+ok $e.language.deprecated, 'Unmapped grandfathered tag identifies as deprecated';
+
+my $f = LanguageTag.new: 'i-navajo';
+is $f.language, 'nv', 'One-to-one grandfathereed tag correctly converts to preferred tag';
+
+my $g = LanguageTag.new: 'ar-aao';
+is $g.language, 'ar-aao', 'Algerian Saharan Arabic extended tag stays as a single tag';
+is $g.language.preferred, 'aao', 'Algerian Saharan Arabic preferred tag is just aao';
 
 done-testing;
