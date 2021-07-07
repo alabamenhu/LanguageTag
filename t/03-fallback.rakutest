@@ -1,0 +1,20 @@
+=begin pod
+    A hallmark of the LanguageTaggish's requirement is that any unknown calls
+    should return the empty string (for improved interoptability between formats).
+
+    These tests ensure that unknown and bad data all consistently return
+    empty strings when called.
+=end pod
+
+use Test;
+use Intl::LanguageTag;
+
+my $tag = LanguageTag.new: 'en-u-sd-usal'; # imply region, also text conflict
+
+is $tag.region, 'US';
+is $tag.variants, '';
+is $tag.variants, '';
+
+is $tag.unicode.numbers.Str, '';
+
+done-testing;
