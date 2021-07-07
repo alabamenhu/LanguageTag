@@ -1,4 +1,4 @@
-use LanguageTag;
+use Intl::LanguageTag;
 use Test;
 
 done-testing()

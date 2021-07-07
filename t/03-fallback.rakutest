@@ -11,7 +11,7 @@ use Intl::LanguageTag;
 
 my $tag = LanguageTag.new: 'en-u-sd-usal'; # imply region, also text conflict
 
-is $tag.region, 'US';
+is $tag.region, 'us';
 is $tag.variants, '';
 is $tag.variants, '';
 
