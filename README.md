@@ -1,11 +1,11 @@
 # Intl::LanguageTag
 
 > ###⚠︎ Warning ⚠︎ 
-> v0.11+ is *mostly* backwards compatible with v.0.10 and prior.  The following is not currently supported from v0.10-:**
->  * Heavy extensions introspection (possible in v.12, but via different mechanisms)
+> v0.11+ is *mostly* backwards compatible with v.0.10 and prior.  The following is not backwards compatible from v0.10-:**
+>  * Heavy extensions introspection (possible in v0.12, but via new API)
+>  * Grandfathered / legacy tags (possible in v0.12, but via new API)
 >  * Creation by means other than a `Str`
 >  * Enums
->  * Grandfathered / legacy tags
 >  * `LanguageTagFilter` objects
   
 Support for all will be addressed in forthcoming updates.
@@ -34,21 +34,24 @@ Everything is value typed!  This means you can easily use them in sets, bags, an
 Once you've created a language tag, you have the following simple methods to introspect it.
 
   * **`.language`**  
-  The language code.
+  The language code.  
+  Introspections: *.well-formed, .valid, .preferred, .deprecated, .macrolanguage, .default-script*)
   * **`.script`**  
-  The script used, will be omitted if the same as the default script.
+  The script used, will be omitted if the same as the default script.  
+  Introspections: *.well-formed, .valid, .deprecated*)
   * **`.region`**  
-  The region code
+  The region code  
+  Introspections: *.well-formed, .valid, .deprecated, .preferred*)
   * **`.variants`**  
-  The variant codes. This object provides positional access to its subtags.
+  The variant codes. This object provides positional access to its subtags.  
+  Introspections: *.well-formed, .valid, .valid-for-tag, .deprecated, .prefixes*)
   * **`.extensions`**  
   Any extensions.  This object provides hashy access (currently recognizing `<t>` and `<u>`)
   * **`.private-use`**  
   Any private use tags. This object provides positional access to its subtags.
   
-Each of the above will stringify into the exact code, but may also have additional methods.
+Each of the above will stringify into the exact code, but also has introspective methods. 
 For instance, `.language.default-script` tells you what the default script for the language is.
-These will be documented more in a future release.
 
 ## Canonicalization
 
