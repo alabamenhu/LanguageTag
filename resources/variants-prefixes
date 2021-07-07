@@ -67,11 +67,11 @@ en
 gascon
 oc
 grclass
-oc
+oc,oc-aranes,oc-auvern,oc-cisaup,oc-creiss,oc-gascon,oc-lemosin,oc-lengadoc,oc-nicard,oc-provenc,oc-vivaraup
 grital
-oc
+oc,oc-cisaup,oc-nicard,oc-provenc
 grmistr
-oc
+oc,oc-aranes,oc-auvern,oc-cisaup,oc-creiss,oc-gascon,oc-lemosin,oc-lengadoc,oc-nicard,oc-provenc,oc-vivaraup
 hepburn
 ja-Latn
 heploc
