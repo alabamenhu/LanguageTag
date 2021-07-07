@@ -17,50 +17,121 @@ class LanguageTag::BCP47 {
     has Variants    $.variants;              #= The variants associated with the tag
     has Extensions  $.extensions;            #= The extensions associated with the tag
     has PrivateUse  $.private-use;           #= Any private use tags
+    has Str         $!str-cache;             #= Stringified version of this tag
+
+    subset Letter of Str
+        where /<[a..wyz]>/;                  #= A single, unaccented, lowercase Latin letter; excludes x
+    my Callable %shortcuts;                  #= Shortcuts that are registered in FALLBACK
+
+    my constant %legacy = Map.new: <
+         en-GB-oed     en-GB-oxendict      i-ami         ami
+         i-bnn         bnn                 i-hak         hak
+         i-klingon     tlh                 i-lux         lb
+         i-navajo      nv                  i-pwn         pwn
+         i-tao         tao                 i-tay         tay
+         i-tsu         tsu                 sgn-BE-FR     sfb
+         sgn-BE-NL     vgt                 sgn-CH-DE     sgg
+         art-lojban    jbo                 no-bok        nb
+         no-nyn        nn                  zh-guoyu      cmn
+         zh-hakka      hak                 zh-min-nan    nan
+         zh-xiang      hsn                 i-default     ?
+         i-enochian    ?                   i-mingo       ?
+         cel-gaulish   ?                   zh-min        ?
+    >;
+    my constant %legacy-unmappable = Map.new: (
+        i-mingo     => "The tag ‘i-mingo’ should be avoided.  \nPerhaps you meant to use ‘see’ (for the virtually identical Senecan language)",
+        zh-min      => "The tag ‘zh-min’ should be avoided.  \nPerhaps you meant to use ‘cdo’ (Min Dong), ‘cpx’ (Pu-Xian), ‘czo’ (Min Zhong), \n‘mnp’ (Min Bei), or ‘nan’ (Min Nan)?",
+        cel-gaulish => "The tag ‘cel-gaulish’ should be avoided.  \nPerhaps you meant to use ‘xcg’ (Cisalpine), ‘xga’ (Galatian), or ‘xtg’ (Transalpine)?",
+        i-enochian  => "The tag ‘enochian’ should be avoided.  \nPerhaps you meant to use ‘mis-x-enochian’ (uncoded, with private use indication)?",
+        i-default   => "The tag ‘i-default’ should be avoided.  \nPerhaps you meant to use ‘und’ (undefined)?"
+    );
 
     proto method new(|) {*}
     multi method new(Str $tag) {
-        nextwith $tag.lc.split('-');
+        if %legacy{$tag}:exists {
+            if %legacy-unmappable{$tag}:exists {
+                warn %legacy-unmappable{$tag};
+                nextwith $tag.list
+            } else {
+                nextwith %legacy{$tag}.split('-')
+            }
+        } else {
+            nextwith $tag.lc.split('-')
+        }
     }
-
     multi method new(*@list is raw) is implementation-detail {
         my $offset = 1;
-        my $language    = Language.new:   @list[0];
+
+        # In a canonical tag, these are partially interconnected.
+        # In this method, we handle the interconnectedness for language, script, region, variants.
+        # Extensions are out of our purview, so are sent L/S/R for creation.
+        my $language    = Language.new:   @list, $offset;
         my $script      = Script.new:     @list, $offset;
         my $region      = Region.new:     @list, $offset;
         my $variants    = Variants.new:   @list, $offset;
-        my $extensions  = Extensions.new: @list, $offset;
+        my $extensions  = Extensions.new: @list, $offset, $language, $script, $region;
         my $private-use = PrivateUse.new: @list, $offset;
+
+        # Data clean up
+        #
+        # Script should *always* be defined for introspection by internationalization
+        # frameworks -- we'll remove it during stringification if it can be implied.
+        $script = Script.new: $language.default-script if $script eq '';
+
+        # Next, when a subdivision is present, it's recommended to either
+        #   (a) set $region based on it (if $region eq '')
+        #   (b) do nothing (if $region eq .subdivision.substr(0,2).lc)
+        #   (c) remove subdivision (if ne $region) -- this will be handed in the $extensions creation
+        if '' ne my $sd = $extensions<u>.subdivision {
+            $region = Region.new: code => $sd.Str.substr(0,2)
+        }
 
         self.bless: :$language, :$script, :$region, :$variants, :$extensions, :$private-use;
     }
 
-    method WHICH { ValueObjAt.new: "Intl::LanguageTag|" ~ self.Str }
+    method WHICH {
+        ValueObjAt.new: "Intl::LanguageTag|" ~ self.Str
+    }
     multi method COERCE (LanguageTaggish:D $tag --> ::?CLASS ) {
         self.new: $tag.bcp47
     }
     multi method COERCE (Str:D $tag --> ::?CLASS ) {
         self.new: $tag
     }
+    method REGISTER-SHORTCUT (::?CLASS:U: Str:D \indicator, Callable:D \route) {
+        %shortcuts{indicator} := route;
+    }
+    method FALLBACK (Str:D $want) {
+        return .(self)
+            with %shortcuts{$want};
+        ''; # blank string per LanguageTaggish standard
+    }
 
     method       bcp47 (            --> Str) {  self.Str       }
     multi method gist  (::?CLASS:D: --> Str) {  self.Str       }
     multi method Str   (::?CLASS:U: --> Str) { '(LanguageTag)' }
     multi method Str   (::?CLASS:D: --> Str) {
-        my $s = $!script.Str;
-        my $r = $!region.Str;
-        my $v = $!variants.Str;
-        my $e = $!extensions.Str;
-        my $p = $!private-use.Str;
+        .return with $!str-cache;
 
-        # Each of the strings must exist.
+        # Each of the strings must exist (but may be empty and falsey).
         # By pre-storing the .Strs, we only call the string formation once
-        ~ $!language
-        ~ ("-" if $s) ~ $s
-        ~ ("-" if $r) ~ $r
-        ~ ("-" if $v) ~ $v
-        ~ ("-" if $e) ~ $e
-        ~ ("-" if $p) ~ $p
+        my $script      = $!script.Str;
+        my $region      = $!region.Str;
+        my $variants    = $!variants.Str;
+        my $extensions  = $!extensions.Str;
+        my $private-use = $!private-use.Str;
+
+        my Str $tag = ~$!language;
+
+        $tag ~= "-$script"
+            if $script ne $!language.default-script;
+
+        $!str-cache =
+            ~ $tag
+            ~ ("-" if $region     ) ~ $region
+            ~ ("-" if $variants   ) ~ $variants
+            ~ ("-" if $extensions ) ~ $extensions
+            ~ ("-" if $private-use) ~ $private-use
     }
 
     #| Represents a language
@@ -68,29 +139,47 @@ class LanguageTag::BCP47 {
         has $!code is built;
         method WHICH { ValueObjAt.new: "Intl::LanguageTag::Language|" ~ $!code }
 
-        method       new   (Str $code   --> ::?CLASS:D) { self.bless: code => $code.lc }
-        multi method gist  (::?CLASS:D: -->      Str:D) { '[Language:' ~ $!code ~ ']'  }
-        multi method gist  (::?CLASS:U: -->      Str:D) { '(Language)'                 }
-        method       Str   (            -->      Str:D) { $!code }
-
         my %valid          := BEGIN %?RESOURCES<languages-valid>.lines.Set;
         my %deprecated     := BEGIN %?RESOURCES<languages-deprecated>.lines.Set;
         my %macrolanguage  := BEGIN %?RESOURCES<languages-macro>.lines.Map;
         my %default-script := BEGIN %?RESOURCES<languages-script>.lines.Map;
         my %preferred      := BEGIN %?RESOURCES<languages-preferred>.lines.Map;
+        my %extended       := BEGIN %?RESOURCES<languages-extended>.lines.map(-> $pfx, $exts { $pfx => $exts.split: ','}).Map;
+
+        proto method new (|) { * }
+        multi method new (Str $code   --> ::?CLASS:D) {
+            self.bless: code => $code.lc
+        }
+        multi method new (@codes is raw, $offset is rw --> ::?CLASS:D) is implementation-detail {
+            if %extended{@codes[0]}:exists && @codes[1] (elem) %extended{@codes[0]} {
+                $offset = 2;
+                return self.bless: code => @codes[0] ~ "-" ~ @codes[1]
+            }else{
+                $offset = 1;
+                return self.bless: code => @codes[0]
+            }
+        }
+        multi method gist  (::?CLASS:D: -->      Str:D) { '[Language:' ~ $!code ~ ']'  }
+        multi method gist  (::?CLASS:U: -->      Str:D) { '(Language)'                 }
+        method       Str   (            -->      Str:D) { $!code }
 
         #| A well formed language code is 2-3 letters or numbers
-        method well-formed    ( --> Bool ) { so $!code ~~ /<[a..zA..Z0..9]> ** 2..3/ }
+        method well-formed ( --> Bool ) { so $!code ~~ /<[a..zA..Z0..9]> ** 2..3/ }
+
         #| A valid language code is a code that is well-formed and in the IANA languages database.
-        method valid          ( --> Bool ) { %valid{         $!code}:exists }
-        #| A deprecated code should be avoided, or converted to a preferred value.
-        method deprecated     ( --> Bool ) { %deprecated{    $!code}:exists }
+        method valid ( --> Bool ) { %valid{$!code}:exists }
+
+        #| A deprecated code should be avoided, or converted to a preferred value if it exists.
+        method deprecated ( --> Bool ) { %deprecated{$!code}:exists }
+
         #| A macrolanguage encompasses several other languages (e.g. Arabic vs MSA, etc).
-        method macrolanguage  ( --> Str  ) { %macrolanguage{ $!code} // ''  }
+        method macrolanguage ( --> Str  ) { %macrolanguage{$!code} // '' }
+
         #| The script to be used if not otherwise specified.
-        method default-script ( --> Str  ) { %default-script{$!code} // ''  }
+        method default-script ( --> Str  ) { %default-script{$!code} // '' }
+
         #| The code that is preferred for this language (for instance, when deprecated)
-        method preferred      ( --> Str  ) { %preferred{     $!code} // ''  }
+        method preferred ( --> Str  ) { %preferred{$!code} // '' }
     }
 
     #| Represents a script
@@ -116,11 +205,13 @@ class LanguageTag::BCP47 {
         my %deprecated     := BEGIN %?RESOURCES<scripts-deprecated>.lines.Set;
 
         #| A well-formed script consists of four alphanumeric characters
-        method well-formed    ( --> Bool ) { so $!code ~~ /<[a..zA..Z0..9]> ** 4/ }
+        method well-formed ( --> Bool ) { so $!code ~~ /<[a..zA..Z0..9]> ** 4/ }
+
         #| A valid script is found in the IANA registry
-        method valid          ( --> Bool ) { %valid{         $!code}:exists }
+        method valid ( --> Bool ) { %valid{$!code}:exists }
+
         #| A deprecated script should be avoided
-        method deprecated     ( --> Bool ) { %deprecated{    $!code}:exists }
+        method deprecated ( --> Bool ) { %deprecated{$!code}:exists }
     }
 
     #| Represents a region
@@ -128,8 +219,8 @@ class LanguageTag::BCP47 {
         has $!code is built;
         method WHICH { ValueObjAt.new: "Intl::LanguageTag::Region|" ~ $!code }
 
-        multi method new (Str $code   --> ::?CLASS:D) { self.bless: code => $code.uc }
-        multi method new (@subtags is raw, $offset is rw --> ::?CLASS:D) {
+        multi method new (Str $code --> ::?CLASS:D) { self.bless: code => $code.uc }
+        multi method new (@subtags is raw, $offset is rw --> ::?CLASS:D) is implementation-detail {
             self.bless:
                 code =>
                     @subtags > $offset &&
@@ -158,32 +249,47 @@ class LanguageTag::BCP47 {
     class Variant {
         has $!code is built;
 
-        method       WHICH { ValueObjAt.new: "Intl::LanguageTag::Variant|" ~ $!code }
-        method       new   ( Str $code  --> ::?CLASS:D) { self.bless: :$code }
+        method       WHICH { ValueObjAt.new: "Intl::LanguageTag::Variant|" ~ $!code   }
+        method       new   ( Str $code  --> ::?CLASS:D) { self.bless: :$code          }
         multi method gist  (::?CLASS:D: -->      Str:D) { '[Variant:' ~ $!code ~ ']'  }
         multi method gist  (::?CLASS:U: -->      Str:D) { '(Variant)'                 }
-        method       Str   (            -->      Str:D) { $!code // '' }
+        multi method Str   (::?CLASS:D: -->      Str:D) { $!code // ''                }
+        multi method Str   (::?CLASS:U: -->      Str:D) {           ''                }
 
-        my %valid          := BEGIN %?RESOURCES<variants-valid>.lines.Set;
-        my %deprecated     := BEGIN %?RESOURCES<variants-deprecated>.lines.Set;
-        my %prefixes       := BEGIN %?RESOURCES<variants-prefixes>.lines.Map;
-        method well-formed ( --> Bool ) { so $!code ~~ /<[a..zA..Z0..9]> ** 5..8 | <[0..9]> <[a..zA..Z]> ** 3/}
-        #| Checks that the variant is valid (recognized by the IANA registry).  Use valid-for-language to ensure it's also valid for the language
-        method valid       ( --> Bool ) { %valid{         $!code}:exists }
-        #| Checks that the variant is valid for the language
-        multi method valid-for-language(LanguageTag::BCP47 $tag) { samewith $tag.language}
-        #| Checks that the variant is valid for the language
-        multi method valid-for-language(Str(Language)     $lang) {
-            my @prefixes = %prefixes{self.Str}.split(',');
-            for @prefixes -> $prefix {
+        # Resource files autogenerated from
+        my %valid       := BEGIN %?RESOURCES<variants-valid     >.lines.Set;
+        my %deprecated  := BEGIN %?RESOURCES<variants-deprecated>.lines.Set;
+        my %prefixes    := BEGIN %?RESOURCES<variants-prefixes  >.lines.Map;
 
-            }
-            False
+        #| Checks that the variant is well form (5 to 8 characters, or 4 if starting with a digit)
+        method well-formed ( --> Bool ) {
+            so $!code ~~ /<[a..zA..Z0..9]> ** 5..8 | <[0..9]> <[a..zA..Z]> ** 3/
         }
+
+        #| Checks that the variant is valid (recognized by the IANA registry).  Use valid-for-language to ensure it's also valid for the language
+        method valid ( --> Bool ) {
+            %valid{$!code}:exists
+        }
+
+        #| Checks that the variant is valid for the language tag (generally the parent tag of the variant)
+        multi method valid-for-tag(LanguageTag::BCP47 $tag) {
+            samewith $tag.Str
+        }
+
+        #| Checks that the variant is valid for the language tag (generally the parent tag of the variant)
+        multi method valid-for-tag(Str $tag) is implementation-detail {
+            so $tag.starts-with: any %prefixes{self.Str}.split(',');
+        }
+
         #| A deprecated variant should be avoided
-        method deprecated  ( --> Bool ) { %deprecated{    $!code}:exists }
+        method deprecated ( --> Bool ) {
+            %deprecated{$!code}:exists
+        }
+
         #| The prefix(es) that are valid with this language
-        method prefixes    ( --> Seq  ) { %prefixes{$!code}.split(',') }
+        method prefixes ( --> Seq  ) {
+            %prefixes{$!code}.split: ','
+        }
     }
 
     #| A container holding one or more variants
@@ -216,26 +322,35 @@ class LanguageTag::BCP47 {
         multi method valid-for-language(Str(Language) $lang) { @!variants.all.valid-for-language($lang)  }
         multi method valid-for-language(LanguageTag::BCP47 $lang) { samewith $lang.language  }
     }
-    subset Letter of Str where /<[a..wyz]>/;
 
+    #| An extension is defined by an external authority which governs its
+    #| interpretation.  More specific interpretations are possible if
+    #| extensions are registered (U and T extensions are always available)
     class Extension {
-        has    Letter      $.singleton;
         has    Str         @.subtags;
         my     Extension:U %extensions{Letter:D};
 
         method WHICH { ValueObjAt.new: "Intl::LanguageTag::Extension|{self.Str}" }
-        method REGISTER (Letter:D $id, Extension:U $class ) { %extensions{$id} = $class }
+        method REGISTER-EXTENSION (::?CLASS:U: Letter:D \id, Extension:U \ext) { %extensions{id} := ext }
+
 
         multi method gist  (::?CLASS:D: -->      Str:D) { '[Extension:' ~ self.Str ~ ']'  }
         multi method gist  (::?CLASS:U: -->      Str:D) { '(Extension)'                 }
-        method       Str   (            -->      Str:D) { $!singleton ~ (('-' ~ @!subtags.join('-')) if @!subtags) }
+        method       Str   (            -->      Str:D) { @!subtags.join('-') }
 
-        multi method new (@src-subtags is raw, $offset is rw --> ::?CLASS:D) is implementation-detail {
+        multi method new ( :$singleton, :@subtags, :$language, :$script, :$region ) {
+            self.bless: :@subtags
+        }
+        # By default, the positional one will be called
+        # Subclasses will implement a purely named-arguments approach if they need to
+        # handle language/script/region specially.
+
+        multi method new (@src-subtags is raw, $offset is rw, $language, $script, $region --> ::?CLASS:D) is default {
             my Str $singleton = @src-subtags[$offset++];
             my Str @subtags;
             @subtags.push: @src-subtags[$offset++]
                 while @src-subtags > $offset && @src-subtags[$offset].chars != 1;
-            %extensions{$singleton}.new: :$singleton, :@subtags
+            %extensions{$singleton}.new: :$singleton, :@subtags, :$language, :$script, :$region
         }
 
         #| Well-formed extensions have subtags of 2..8 alphanumeric characters each
@@ -247,17 +362,29 @@ class LanguageTag::BCP47 {
     }
 
     class Extensions is Associative {
+        my class EmptyExtension is Extension {
+            # This class functions as a sort of Nil,
+            # but ensures ultimate stringification
+            # always results in any empty string
+            method Str          { ''             }
+            method AT-KEY       { EmptyExtension }
+            method AT-POS       { EmptyExtension }
+            method EXISTS-KEY   { False          }
+            method EXISTS-POS   { False          }
+            method FALLBACK ($) { EmptyExtension }
+        }
+
         has Extension %!extensions is built;
         method      WHICH        { ValueObjAt.new: "Intl::LanguageTag::Variants|" ~ self.Str }
-        method        Str        { %!extensions.values.sort(*.singleton).join: '-'       }
-        method     AT-KEY (\key) { %!extensions.AT-KEY(key)     }
+        method        Str        { %!extensions.pairs.sort(*.key).map({.key ~ "-" ~ .value}).join: '-'}
+        method     AT-KEY (\key) { %!extensions.AT-KEY(key) // EmptyExtension }
         method EXISTS-KEY (\key) { %!extensions.EXISTS-KEY(key) }
         multi method gist (::?CLASS:D: --> Str) { '[Extensions:' ~ %!extensions.values.join(',') ~ ']' }
         multi method gist (::?CLASS:U: --> Str) { '(Extensions)' }
-        multi method new(@subtags, $offset is rw --> ::?CLASS:D) is implementation-detail {
+        multi method new(@subtags is raw, $offset is rw, $language, $script, $region is rw --> ::?CLASS:D) is implementation-detail {
             my Extension %extensions;
             while @subtags > $offset && @subtags[$offset] ne 'x' {
-                %extensions{@subtags[$offset]} = Extension.new: @subtags, $offset
+                %extensions{@subtags[$offset]} = Extension.new: @subtags, $offset, $language, $script, $region
             }
             self.bless: :%extensions
         }
@@ -290,6 +417,10 @@ class LanguageTag::BCP47 {
     }
 }
 
+#| The Unicode extension (U) further refines the language selection
+#| using various properties as defined by Unicode (e.g. calendar type,
+#| or timezones) needed for proper formatting of textual items in the
+#| language.
 class UnicodeLocale is LanguageTag::BCP47::Extension does Associative {
     class Type {
         has Str $.id;                     #= ID matches [a..z0..9] ** 2
@@ -302,25 +433,35 @@ class UnicodeLocale is LanguageTag::BCP47::Extension does Associative {
             my @subtags;
             @subtags.push: subtags[$offset++]
                 until $offset == subtags || subtags[$offset].chars < 3;
-            self.bless: :$id, :@subtags, :singleton<t>;
+            self.bless: :$id, :@subtags, :singleton<u>;
         }
 
-        method       WHICH               { ValueObjAt.new: "Intl::LanguageTag::Extension::u|" ~ self.Str  }
+        method       WHICH               { ValueObjAt.new: "Intl::LanguageTag::Extension::u::Type|" ~ self.Str  }
         multi method gist  (::?CLASS:D:) { '[' ~ $!id ~ ':' ~ @!subtags.join(',') ~ ']' }
         multi method gist  (::?CLASS:U:) { '(Type)' }
-        method       Str                 { $!id ~ '-' ~ @!subtags.join('-') }
+        method       Str                 { @!subtags.join('-') }
+        multi method Bool  (::?CLASS:U:) { False        }
+        multi method Bool  (::?CLASS:D:) { so @!subtags }
     }
 
     my constant blank-type = Type.new: :id(''), :subtags[];
     has  Type %.types      is default(blank-type);
-    has  Str  @.attributes is default('');
+    has  Str  @.attributes is default(''); #= Attributes are currently reserved, and so always unused
 
+    # The language origin should exclude all singletons (including private use).
+    # To preserve default script and variant enforcement, we use the actual LanguageTag::BCP47
+    # We can enforce the lack of singletons at creation, but can't guarantee it for others.
     has  LanguageTag::BCP47  $!origin is built;
-    #TODO: don't do initial bit if only has x0
+
     method Str {
-        ~ 't'
-        ~ ("-" ~ @!attributes.join("-") if @!attributes)
-        ~ ("-" ~ %!types.values.sort(*.id).join("-") if %!types)
+        # Attributes are currently reserved, so we ignore them for now
+        #~ (@!attributes.join("-") if @!attributes)
+        my $tag = %!types.pairs.grep(*.key ne 'x0').sort(*.key).map({.key ~ '-' ~ .value}).join("-");
+        if %!types<x0>:exists {
+            $tag ~= '-' if $tag;
+            $tag ~= 'x0-' ~ %!types<x0>.Str;
+        }
+        $tag
     }
 
     proto new (|) { {*} }
@@ -341,9 +482,9 @@ class UnicodeLocale is LanguageTag::BCP47::Extension does Associative {
         @attributes.push: @subtags[$offset++] while @subtags > $offset && @subtags[$offset].chars > 2;
 
         # The rest of the tags are key/[multi]value, which is 2, [3..8]*
-        while @subtags > $offset && @subtags[$offset].chars > 1 {
-            %types{@subtags[$offset]} = Type.new: @subtags, $offset
-        }
+        %types{@subtags[$offset]} = Type.new: @subtags, $offset
+            while @subtags > $offset
+               && @subtags[$offset].chars > 1;
 
         self.bless: :@attributes, :$singleton, :%types
     }
@@ -375,8 +516,10 @@ class UnicodeLocale is LanguageTag::BCP47::Extension does Associative {
     multi method gist (::?CLASS:U:) { '[Extension|U]'                             }
     method     AT-KEY (  \key     ) { %!types.AT-KEY:     key                     }
     method EXISTS-KEY (  \key     ) { %!types.EXISTS-KEY: key                     }
+    method      WHICH               { ValueObjAt.new: "Intl::LanguageTag::Extension::u|" ~ self.Str  }
 }
 
+#| The Transformed Content extension defines how the content should be transformed.
 class TransformedContent is LanguageTag::BCP47::Extension does Associative {
     class Field {
         has Str $.id;                     #= ID matches [a..z][0..9]
@@ -395,25 +538,32 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
                 @subtags.push: subtags[$offset++]
                     until $offset == subtags || subtags[$offset].chars < 3;
             }
-            self.bless: :$id, :@subtags, :singleton<t>;
+            self.bless: :$id, :@subtags;
         }
 
-        method       WHICH               { ValueObjAt.new: "Intl::LanguageTag::Extension::t|" ~ self.Str  }
+        method       WHICH               { ValueObjAt.new: "Intl::LanguageTag::Extension::t::Field|" ~ self.Str  }
         multi method gist  (::?CLASS:D:) { '[' ~ $!id ~ ':' ~ @!subtags.join(',') ~ ']' }
         multi method gist  (::?CLASS:U:) { '(Type)' }
-        method       Str                 { $!id ~ '-' ~ @!subtags.join('-') }
+        method       Str                 { @!subtags.join: '-' }
     }
 
     my constant blank-field = Field.new: :id(''), :subtags[];
-    has  Field              %.fields      is default(blank-field);
-    has  LanguageTag::BCP47 $!origin is built;
+    has  Field              %.fields is default(blank-field);
+    has  LanguageTag::BCP47 $.origin is built;
 
-    #TODO: don't do initial bit if only has x0
     method Str {
-        ~ 't'
-                ~ ("-" ~ $!origin if $!origin)
-                ~ ("-" ~ %!fields.values.sort(*.id).grep(*.id ne 'x0').join("-") if %!fields)
-                ~ ("-" ~ %!fields<0> if %!fields<x0>:exists)
+        my $tag = $!origin.Str.lc; # canonically lowercase
+
+        $tag ~= '-'
+            if  %!fields > 2                              # Guaranteed at least one is not private use
+            || (%!fields == 1 && (%!fields<x0>:!exists)); # If only one, check whether it's x0
+
+        $tag ~= %!fields.pairs.grep(*.key ne 'x0').sort(*.key).map({.key ~ '-' ~ .value}).join("-");
+        if %!fields<x0>:exists {
+            $tag ~= '-' if $tag;
+            $tag ~= 'x0-' ~ %!fields<x0>;
+        }
+        $tag
     }
 
     proto new (|) { {*} }
@@ -463,10 +613,31 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
     method EXISTS-KEY (  \key     ) { %!fields.EXISTS-KEY: key                    }
 }
 
-LanguageTag::BCP47::Extension.REGISTER: 't', TransformedContent;
-LanguageTag::BCP47::Extension.REGISTER: 'u', UnicodeLocale;
 
+# Ensure the extensions and shortcuts are registered.
+LanguageTag::BCP47::Extension.REGISTER-EXTENSION: 't', TransformedContent;
+LanguageTag::BCP47::Extension.REGISTER-EXTENSION: 'u', UnicodeLocale;;
 
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'transform',          *.extensions<t>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'unicode',            *.extensions<u>;
+
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'calendar',           *.extensions<u><ca>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'currency-format',    *.extensions<u><cf>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'collation',          *.extensions<u><co>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'currency',           *.extensions<u><cu>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'dict-break-exclude', *.extensions<u><dx>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'emoji-style',        *.extensions<u><em>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'first-day',          *.extensions<u><fw>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'hour-cycle',         *.extensions<u><hc>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'line-break',         *.extensions<u><lb>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'word-break',         *.extensions<u><lw>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'measurement-system', *.extensions<u><ms>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'numbers',            *.extensions<u><nu>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'region-override',    *.extensions<u><rg>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'subdivision',        *.extensions<u><sd>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'sentence-break',     *.extensions<u><ss>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'timezone',           *.extensions<u><tz>;
+LanguageTag::BCP47.REGISTER-SHORTCUT: 'uni-variant',        *.extensions<u><va>;
 
 
 #multi sub filter-language-tags(@available where { @available.all ~~ LanguageTag}, $wants, :$basic = False) is export {
@@ -516,13 +687,13 @@ sub filter-language-tags-extended(
 
 
 
-my constant english = LanguageTag::BCP47.new('en');
+#my \english = LanguageTag::BCP47.new('en');
 
 #| Implements RFC4647 § 3.4 Lookup
 sub lookup-language-tags(
         LanguageTag::BCP47  @available-tags,
         LanguageTag::BCP47  @preferred-tags,
-        LanguageTag::BCP47  $default = english,
+        LanguageTag::BCP47  $default = LanguageTag::BCP47.new('en'),
         Bool               :$single  = False
         #--> Seq
 ) {
@@ -589,7 +760,6 @@ sub lookup-language-tags(
     return @results.head if $single;
     @results;
 }
-
 
 sub EXPORT(*@types) {
     my %export;
