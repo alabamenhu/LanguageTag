@@ -52,7 +52,7 @@ Swahili (individual language) => Swahili
 #
 ##
 # Kwa   stays  Kwa
-# Kwa' becomes Bakwa (Kwa’ in Kwa’)
+# Kwa' becomes Bakwa (Kwa’ in Kwa’)
   Kwa'    =>   Bakwa
 ##
 # Mbe   stays  Mbe
@@ -62,13 +62,13 @@ Swahili (individual language) => Swahili
 #
 #
 # 4. Correct Punctuation Oddities and/or common English names
-# The general rule in code accidentally consumes apostropes as word breaks.
+# The general rule in code accidentally consumes apostrophes as word breaks.
 # This is a quick fix
 # 4.a. Regions
 Lao People's Democratic Republic      => Laos
 Democratic People's Republic of Korea => North Korea
 Republic of Korea                     => South Korea
-Saint Martin (French part)            => FrenchSaintMartin
+Saint Martin (French part)            => French Saint Martin
 RussianFederation                     => Russia
 Taiwan, Province of China             => Taiwan
 South-Eastern Asia                    => Southeastern Asia
@@ -99,8 +99,8 @@ Khitan small script                   => Khitan Small
 Korean (alias for Hangul + Han)       => Korean
 Latin (Fraktur variant)               => Fraktur
 Latin (Gaelic variant)                => Gaelic
-#OberiƆkaimɛ,Medf
-#Moḍī,Modi
+OberiƆkaimɛ,Medf                      => Oberi Okaime
+Moḍī,Modi                             => Modi
 #NepālaLipi,Newa
 #NaxiDongba,Nkdb
 #Na²¹ɕi³³To³³Ba²¹,Nkdb

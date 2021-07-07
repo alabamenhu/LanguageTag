@@ -21,4 +21,4 @@ lib/.precomp
 # Ignore the following because file license is unclear.  Available at #
 # https://www.iana.org/assignments/language-subtag-registry           #
 #######################################################################
-resources/language-subtag-registry
+tools/language-subtag-registry

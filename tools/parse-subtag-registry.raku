@@ -12,7 +12,7 @@
 #
 #
 # WARNING: If changing this file (in particular what is output), you
-#          MUST adjust the BCP47.pm6 file.  Double check .t results.
+#          MUST adjust the BCP47.rakumod file.  Double check .t results.
 #
 #  The language subtag registry is located at
 #  <https://www.iana.org/assignments/language-subtag-registry>
@@ -42,7 +42,6 @@ registry has been updated, you can force an update to it:
 First we have a few constants:
 =end pod
 
-
 constant clear-line = "\x001b[2K";
 
 sub MAIN (Bool :$update = False) {
@@ -61,46 +60,49 @@ sub MAIN (Bool :$update = False) {
     my $registry            = slurp "language-subtag-registry";
     my @records             = $registry.split(/\%\%\n/);
 
-    my IO::Handle $languages-valid      = open "languages-valid",      :w;
-    my IO::Handle $languages-deprecated = open "languages-deprecated", :w;
-    my IO::Handle $languages-script     = open "languages-script",     :w;
-    my IO::Handle $languages-macro      = open "languages-macro",      :w;
-    my IO::Handle $languages-preferred  = open "languages-preferred",  :w;
+    my \resources = $*PROGRAM.parent(2).add('resources');
 
-    my IO::Handle $scripts-valid      = open "scripts-valid",      :w;
-    my IO::Handle $scripts-deprecated = open "scripts-deprecated", :w;
+    my IO::Handle $languages-valid      = open resources.add("languages-valid"),      :w;
+    my IO::Handle $languages-deprecated = open resources.add("languages-deprecated"), :w;
+    my IO::Handle $languages-script     = open resources.add("languages-script"),     :w;
+    my IO::Handle $languages-macro      = open resources.add("languages-macro"),      :w;
+    my IO::Handle $languages-preferred  = open resources.add("languages-preferred"),  :w;
+    my IO::Handle $languages-extended   = open resources.add("languages-extended"),   :w;
+    my %ext-lang;
 
-    my IO::Handle $regions-valid      = open "regions-valid",      :w;
-    my IO::Handle $regions-deprecated = open "regions-deprecated", :w;
-    my IO::Handle $regions-preferred  = open "regions-preferred",  :w;
+    my IO::Handle $scripts-valid      = open resources.add("scripts-valid"),      :w;
+    my IO::Handle $scripts-deprecated = open resources.add("scripts-deprecated"), :w;
 
-    my IO::Handle $variants-valid      = open "variants-valid",      :w;
-    my IO::Handle $variants-deprecated = open "variants-deprecated", :w;
-    my IO::Handle $variants-prefixes   = open "variants-prefixes",   :w;
+    my IO::Handle $regions-valid      = open resources.add("regions-valid"),      :w;
+    my IO::Handle $regions-deprecated = open resources.add("regions-deprecated"), :w;
+    my IO::Handle $regions-preferred  = open resources.add("regions-preferred"),  :w;
 
-    #my $languages-enum-file = open "enum/languages.data",:w;
+    my IO::Handle $variants-valid      = open resources.add("variants-valid"),      :w;
+    my IO::Handle $variants-deprecated = open resources.add("variants-deprecated"), :w;
+    my IO::Handle $variants-prefixes   = open resources.add("variants-prefixes"),   :w;
+
+    my IO::Handle $languages-enum = open resources.add("enum/languages"),:w;
+    my IO::Handle $scripts-enum   = open resources.add("enum/scripts"),  :w;
+    my IO::Handle $regions-enum   = open resources.add("enum/regions"),  :w;
+    my IO::Handle $variants-enum  = open resources.add("enum/variants"), :w;
     #my $extlangs-file       = open "extlangs.data",      :w;
     #my $scripts-file        = open "scripts.data",       :w;
-    #my $scripts-enum-file   = open "enum/scripts.data",  :w;
     #my $regions-file        = open "regions.data",       :w;
-    #my $regions-enum-file   = open "enum/regions.data",  :w;
     #my $variants-file       = open "variants.data",      :w;
-    #my $variants-enum-file  = open "enum/variants.data", :w;
     #my $redundancies-file   = open "redundancies.data",  :w;
     #my $grandfathered-file  = open "grandfathered.data", :w;
 
-    #my %enum-override = do for "enum-override.data".IO.lines.grep(none *.starts-with('#')) {
-    #    my ($orig, $over) = $_.split('=>');
-    #    $orig.subst(/\s/,'',:g) => $over.trim;
-    #}
+    my %enum-override = do for "enum-override".IO.lines.grep(none *.starts-with('#')) {
+        my ($orig, $over) = $_.split('=>');
+        $orig.subst(/\s/,'',:g) => $over.trim;
+    }
 
-
-    #sub format-description($d) {
-    #    my $d2 = %enum-override{$d.subst(/\s/,'',:g)} // $d;
-    #    $d2.subst(/(<< <:Ll>)/, {$0.uc},:g)   # capitalize initial words
-    #       .subst(/    <:P>  /,      '',:g)   # remove punctuation
-    #       .subst(/    <:Z>  /,      '',:g);  # remove spacing
-    #}
+    sub format-description($d) {
+        my $d2 = %enum-override{$d.subst(/\s/,'',:g)} // $d;
+        $d2.subst(/(<< <:Ll>)/, {$0.uc},:g)   # capitalize initial words
+           .subst(/    <:P>  /,      '',:g)   # remove punctuation
+           .subst(/    <:Z>  /,      '',:g);  # remove spacing
+    }
 
     my $stage = 0;
 
@@ -133,7 +135,12 @@ sub MAIN (Bool :$update = False) {
             print clear-line, "\rParsing regions ... $code ({ @descriptions ?? @descriptions.head.lines[0] !! '' })";
         } elsif $type eq 'variant' {
             say clear-line, "\rParsing regions ... OK" and $stage++ if $stage == 2;
-            print clear-line, "\rParsing variants ... $code ({ @descriptions ?? @descriptions.head.lines[0] !! '' })";
+            print clear-line, "\rParsing variants ... $code ({
+                @descriptions
+                    ?? @descriptions.head.lines[0].chars < 32
+                        ?? @descriptions.head.lines[0]
+                        !! @descriptions.head.lines[0].substr(0,20)
+                    !! '' })";
         }
         my @codes;
         if $code ~~ /(\S+)'..'(\S+)/ {
@@ -152,22 +159,24 @@ sub MAIN (Bool :$update = False) {
                     $languages-macro.say:     "$code\n$macro"     if $macro;
                     $languages-preferred.say: "$code\n$preferred" if $preferred;
                     #$languages-file.say: "$code,$script,$macro,$preferred" ~ ( '!' if $deprecated);
-                    #unless $deprecated {
-                    #    for @descriptions -> $description is rw {
-                    #        $description = %enum-override{$description.subst(/\s/,'',:g)} // $description;
-                    #        my $description-enum = $description
-                    #            .subst(/(<< <:Ll>)/, {$0.uc},:g)   # capitalize initial words
-                    #            .subst(/    <:P>  /,      '',:g)   # remove punctuation
-                    #            .subst(/    <:Z>  /,      '',:g);
-                    #        # remove whitespace
-                    #        #$languages-enum-file.say: "$description-enum,$code" unless $description-enum eq 'PrivateUse';
-                    #        #say "$code = LanguageTag::$description-enum";
-                    #    }
-                    #}
+                    unless $deprecated {
+                        for @descriptions -> $description {
+                            my $description-enum = format-description (%enum-override{$description.subst(/\s/,'',:g)} // $description);
+                            $languages-enum.say: "$description-enum,$code" unless $description-enum eq 'PrivateUse';
+                            #say "$code = LanguageTag::$description-enum";
+                        }
+                    }
                 }
-    #`<<<            when 'extlang' {
-                    $extlangs-file.say: "$code,$prefix,$script,$preferred" ~ ('!' if $deprecated);
-                }>>>
+                when 'extlang' {
+                    with %ext-lang{$prefixes} {
+                        .push: $code;
+                    }else{
+                        %ext-lang{$prefixes} = Array.new($code);
+                    }
+                    $languages-preferred.say: "{$prefixes}-{$code}\n$preferred" if $preferred;
+                    $languages-macro.say: "{$prefixes}-{$code}\n$macro" if $macro;
+                    # deprecated?
+                }
                 when 'script' {
                     $scripts-valid.say: $code; # no deprecated ones, even though CLDR lists as such
                     $scripts-deprecated.say: $code if $deprecated; # no deprecated ones, even though CLDR lists as such
@@ -202,11 +211,12 @@ sub MAIN (Bool :$update = False) {
                 }
                 #`<<<when 'redundant' {
                     $redundancies-file.say: "$tag,$preferred" ~ ( '!' if $deprecated)
-                }
+                }>>>
                 when 'grandfathered' {
-                    $grandfathered-file.say: "$tag,$preferred" ~ ( '!' if $deprecated);
+                    $languages-deprecated.say: $tag;
+                    $languages-preferred.say: "$tag\n$preferred" if $preferred;
                 }
-                default  {
+                #`<<<default  {
                     # The only record not processed should contain the date.
                     $record ~~ /(\d+\-\d+\-\d+) /;
                     print "Processing language subtag registry dated ", $0.Str, "...";
@@ -215,16 +225,21 @@ sub MAIN (Bool :$update = False) {
         }
     }
     say clear-line, "\rParsing variants ... OK";
-    say "Done.";
 
     close $languages-valid;
     close $languages-deprecated;
     close $languages-script;
     close $languages-macro;
     close $languages-preferred;
+          $languages-extended.say: %ext-lang.map({ .key ~ "\n" ~ .value.join(',') }).join("\n");
+    close $languages-extended;
 
     close $scripts-valid;
     close $scripts-deprecated;
+
+    close $regions-valid;
+    close $regions-deprecated;
+    close $regions-preferred;
     #close $extlangs-file;
     #close $scripts-file;
     #close $regions-file;
