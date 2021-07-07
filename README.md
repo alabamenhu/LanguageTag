@@ -1,13 +1,14 @@
 # Intl::LanguageTag
 
-**Warning: v0.11.0 is *mostly* backwards compatible.  The following is not currently supported from v0.10-:**
-  * Heavy extensions introspection
-  * Creation by means other than a `Str`
-  * Enums
-  * Grandfathered / legacy tags
-  * `LanguageTagFilter` objects
+> ###⚠︎ Warning ⚠︎ 
+> v0.11+ is *mostly* backwards compatible with v.0.10 and prior.  The following is not currently supported from v0.10-:**
+>  * Heavy extensions introspection (possible in v.12, but via different mechanisms)
+>  * Creation by means other than a `Str`
+>  * Enums
+>  * Grandfathered / legacy tags
+>  * `LanguageTagFilter` objects
   
-Support for all will be addressed in forthcoming updates, however extensions introspection may differ in structure.
+Support for all will be addressed in forthcoming updates.
 
 ## Usage
 
@@ -21,9 +22,6 @@ use Intl::LanguageTag::BCP-47 <utils>;  # ← Include lookup-language-tags
 # Create a new LanguageTag from a string
 LanguageTag.new: 'en-US';
 ```
-
-Note that language tags are canonicalized upon creation.  
-This is done in accordance with BCP 47, RFC 6067, RFC 6497, and TR 35 and helps to guarantee value typing mechanics.
 
 ## Which to `use`
 Most of the time, `use Intl::LanguageTag` is what you will want (the BCP-47 tag type is set as the default for a reason).
@@ -48,9 +46,18 @@ Once you've created a language tag, you have the following simple methods to int
   * **`.private-use`**  
   Any private use tags. This object provides positional access to its subtags.
   
-Each of the above will stringify into the exact code, but also have additional methods.
+Each of the above will stringify into the exact code, but may also have additional methods.
 For instance, `.language.default-script` tells you what the default script for the language is.
 These will be documented more in a future release.
+
+## Canonicalization
+
+Language tags are canonicalized to the extent possible upon creation.  
+This is done in accordance with BCP 47, RFC 6067, RFC 6497, and TR 35 and helps to guarantee value typing mechanics.
+Most likely, you may notice that a script will disappear.
+Less likely, if you use grandfathered tags, tags like `i-navajo` will be automatically converted to their preferred form (`nv`) when those exist.
+There are five grandfathered tags without preferred forms which will preserve the entire tag as the “language” (e.g. `i-default`), and issue a warning since those tags should not be used.
+Extended languages tags *are* preserved, and with on-demand and automatic conversion to preferred forms planned for a future release.
 
 ## Utility functions
 
@@ -72,12 +79,21 @@ If the names of these functions is too verbose, you can alias them easily by doi
 In likely order of completion:
 
   * Restore `enum` access
-  * Extlang and grandfathered tag support (via automatic canonicalization)
   * Better introspection of extensions U / T
+  * Logical cloning with changes
+  * Better validation (`.deprecated`, `.valid`, etc)
+  * Extlang and grandfathered tag support (via automatic canonicalization)
   * Improve filtering by enabling wildcards in matches.
   * More exhaustive test files
 
 ## Version history
+- 0.12.0
+  - Extensions and their subelements no longer prefix their type in `.Str` (technically not backwards compatible) for more intuitive use
+  - Some canonicalization during creation (making `en-Latn-US-u-rg-us` yields `en-US`)
+  - Smart introspection (`LanguageTag.new('en').script` yields `Latn`, as it's the specified default)
+  - Updated to IANA subtag registry dated 2021-05-11
+  - 'Shortcuts' available for introspection to Unicode extensions T / U
+    - API makes this available for modules creating custom extensions (although it's unlikely anyone will)
 - 0.11.0
   - Internal code overhaul for better long-term maintenance
   - Added `LanguageTaggish` role
