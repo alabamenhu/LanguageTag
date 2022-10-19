@@ -19,10 +19,12 @@ class LanguageTag::BCP47 {
     has PrivateUse  $.private-use;           #= Any private use tags
     has Str         $!str-cache;             #= Stringified version of this tag
 
-    subset Letter of Str
-        where /<[a..wyz]>/;                  #= A single, unaccented, lowercase Latin letter; excludes x
+    subset Letter of Str where /<[a..wyz]>/; #= A single, unaccented, lowercase Latin letter; excludes x
+
     my Callable %shortcuts;                  #= Shortcuts that are registered in FALLBACK
 
+    # Legacy tags are historical tags that do not conform to modern
+    # language tag syntax.  In the current era (2000) it is rare
     my constant %legacy = Map.new: <
          en-GB-oed     en-GB-oxendict      i-ami         ami
          i-bnn         bnn                 i-hak         hak
@@ -144,7 +146,7 @@ class LanguageTag::BCP47 {
         my %macrolanguage  := BEGIN %?RESOURCES<languages-macro>.lines.Map;
         my %default-script := BEGIN %?RESOURCES<languages-script>.lines.Map;
         my %preferred      := BEGIN %?RESOURCES<languages-preferred>.lines.Map;
-        my %extended       := BEGIN %?RESOURCES<languages-extended>.lines.map(-> $pfx, $exts { $pfx => $exts.split: ','}).Map;
+        my %extended       := BEGIN %?RESOURCES<languages-extended>.lines.map(-> $pfx, $exts { $pfx => $exts.split(',').List }).Map;
 
         proto method new (|) { * }
         multi method new (Str $code   --> ::?CLASS:D) {
@@ -519,7 +521,7 @@ class UnicodeLocale is LanguageTag::BCP47::Extension does Associative {
     method      WHICH               { ValueObjAt.new: "Intl::LanguageTag::Extension::u|" ~ self.Str  }
 }
 
-#| The Transformed Content extension defines how the content should be transformed.
+#| The Transformed Content extension (T) defines how the content should be transformed.
 class TransformedContent is LanguageTag::BCP47::Extension does Associative {
     class Field {
         has Str $.id;                     #= ID matches [a..z][0..9]
@@ -552,10 +554,10 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
     has  LanguageTag::BCP47 $.origin is built;
 
     method Str {
-        my $tag = $!origin.Str.lc; # canonically lowercase
+        my $tag = $!origin.Str.lc; # canonically lowercase in the -t- extension
 
         $tag ~= '-'
-            if  %!fields > 2                              # Guaranteed at least one is not private use
+            if  %!fields  > 2                              # Guaranteed at least one is not private use
             || (%!fields == 1 && (%!fields<x0>:!exists)); # If only one, check whether it's x0
 
         $tag ~= %!fields.pairs.grep(*.key ne 'x0').sort(*.key).map({.key ~ '-' ~ .value}).join("-");
@@ -566,29 +568,34 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
         $tag
     }
 
+    #| Creates a new Transformed Content extension object
     proto new (|) { {*} }
     multi method new(:$singleton, :@subtags) {
         # The internal order is
-        # (1)  a language tag representing the transformation origin [optional]
-        # (2)  a series of attributes (3-8 chars)
-        # (3a) a mechanism identifier (2 chars)
-        # (3b) one or more mechanism tags (3-8 chars)
-        # The sequence 3a/3b may be repeated, although only a handful are defined.
+        #   (1)  a language tag representing the transformation origin [optional]
+        #   (2)  a series of attributes (3-8 chars)
+        #   (3a) a mechanism identifier (2 chars)
+        #   (3b) one or more mechanism tags (3-8 chars)
+        # The sequence 3ab may be repeated, although only a handful are defined.
 
         my Field              %fields;
         my LanguageTag::BCP47 $origin;
+        my Int                $offset = 0;
 
-        my $offset = 0;
+        # Calculate the language.
+        # It will terminate on the first mechanism identifier, so the tag is necessarily
+        # limited to only language, script, region, and variant.
+        $offset++
+            while @subtags > $offset
+            &&    @subtags[$offset] !~~ /^ <[a..zA..Z]> <[0..9]>? $/;
 
-        # Calculate the language (3-8 characters)
-        $offset++ while @subtags > $offset && @subtags[$offset] !~~ /^ <[a..zA..Z]> <[0..9]>? $/;
+        $origin .= new: @subtags[^$offset];
 
-        $origin = LanguageTag::BCP47.new: @subtags[^$offset];
-
-        # The rest of the tags are key/[multi]value, which is 2, [3..8]*
-        while @subtags > $offset && @subtags[$offset].chars > 1 {
-            %fields{@subtags[$offset]} = Field.new: @subtags, $offset
-        }
+        # Calculate the mechanisms.
+        # All remaining tags are groups of a 2-char key followed by one or more 3-8-char values
+        %fields{@subtags[$offset]} = Field.new: @subtags, $offset
+            while @subtags > $offset
+            &&    @subtags[$offset].chars > 1;
 
         self.bless: :$singleton, :$origin, :%fields
     }
@@ -598,14 +605,14 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
     }
 
     # Named access to different types, for convenience
-    method hybrid             (--> Field) { self<h0> }
-    method source             (--> Field) { self<s0> }
-    method destination        (--> Field) { self<d0> }
-    method mechanism          (--> Field) { self<m0> }
-    method keyboard           (--> Field) { self<k0> }
-    method input-method       (--> Field) { self<i0> }
-    method translation        (--> Field) { self<t0> }
-    method private-use        (--> Field) { self<h0> }
+    method hybrid       (--> Field) { self<h0> }
+    method source       (--> Field) { self<s0> }
+    method destination  (--> Field) { self<d0> }
+    method mechanism    (--> Field) { self<m0> }
+    method keyboard     (--> Field) { self<k0> }
+    method input-method (--> Field) { self<i0> }
+    method translation  (--> Field) { self<t0> }
+    method private-use  (--> Field) { self<h0> }
 
     multi method gist (::?CLASS:D:) { '[Extension|U:' ~ @.subtags.join(',') ~ ']' }
     multi method gist (::?CLASS:U:) { '[Extension|U]'                             }
@@ -615,6 +622,10 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
 
 
 # Ensure the extensions and shortcuts are registered.
+# This code needn't be quite this verbose, but we should probably avoid
+# having so too many shortcuts.  Just because we *can* offer a shortcut
+# to drill down three levels into an extension doesn't mean we should.
+# If the next few lines gets too big to fit on a screen, think twice.
 LanguageTag::BCP47::Extension.REGISTER-EXTENSION: 't', TransformedContent;
 LanguageTag::BCP47::Extension.REGISTER-EXTENSION: 'u', UnicodeLocale;;
 
