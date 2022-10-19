@@ -90,6 +90,10 @@ In likely order of completion:
   * More exhaustive test files
 
 ## Version history
+- 0.12.1
+  - Fixed an issue with a potentially consumed sequence when accessing extensions
+  - Updated to IANA subtag registry dated 2022-08-08
+  - Moved to zef ecosystem
 - 0.12.0
   - Extensions and their subelements no longer prefix their type in `.Str` (technically not backwards compatible) for more intuitive use
   - Some canonicalization during creation (making `en-Latn-US-u-rg-us` yields `en-US`)
@@ -138,7 +142,7 @@ of the Unicode CLDR data.  These files are copyrighted by Unicode, Inc., and
 are available and distributed in accordance with
 [their terms](http://www.unicode.org/copyright.html).
 
-The resources file “language-subtag-registry” is comes from the
+The resources file “language-subtag-registry” comes from the
 [IANA](https://www.iana.org/assignments/language-subtag-registry).  I do not
 currently distribute it because I am not aware of its exact license, but it 
 will be automatically downloaded when running the parsing script.  Its data
