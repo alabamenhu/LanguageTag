@@ -17,6 +17,7 @@ lib/.precomp
 # IDE stuff #
 #############
 .idea
+IntlBCP47.iml
 #######################################################################
 # Ignore the following because file license is unclear.  Available at #
 # https://www.iana.org/assignments/language-subtag-registry           #
