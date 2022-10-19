@@ -46,7 +46,7 @@ constant clear-line = "\x001b[2K";
 
 sub MAIN (Bool :$update = False) {
     use LibCurl::Easy;
-    if !("language-subtag-registry".IO.e)
+    if !($*PROGRAM.sibling("language-subtag-registry").IO.e)
     || $update {
         print "{ $update ?? "Updating" !! "Downloading"} IANA subtag registry (~700kB)... ";
         LibCurl::Easy.new(
@@ -57,7 +57,7 @@ sub MAIN (Bool :$update = False) {
         say  "OK";
     }
 
-    my $registry            = slurp "language-subtag-registry";
+    my $registry            = slurp $*PROGRAM.sibling("language-subtag-registry");
     my @records             = $registry.split(/\%\%\n/);
 
     my \resources = $*PROGRAM.parent(2).add('resources');
@@ -92,7 +92,7 @@ sub MAIN (Bool :$update = False) {
     #my $redundancies-file   = open "redundancies.data",  :w;
     #my $grandfathered-file  = open "grandfathered.data", :w;
 
-    my %enum-override = do for "enum-override".IO.lines.grep(none *.starts-with('#')) {
+    my %enum-override = do for $*PROGRAM.sibling("enum-override").IO.lines.grep(none *.starts-with('#')) {
         my ($orig, $over) = $_.split('=>');
         $orig.subst(/\s/,'',:g) => $over.trim;
     }

@@ -409,7 +409,7 @@ AjaBenin,ajg
 Ajië,aji
 Andajin,ajn
 SouthLevantineArabic,ajp
-JudeoTunisianArabic,ajt
+AlgerianJewishSignLanguage,ajs
 JudeoMoroccanArabic,aju
 Ajawa,ajw
 AmriKarbi,ajz
@@ -1120,6 +1120,7 @@ Buamu,box
 BodoCentralAfricanRepublic,boy
 TiéyaxoBozo,boz
 Daakaka,bpa
+Mbuk,bpc
 BandaBanda,bpd
 Bauni,bpe
 Bonggo,bpg
@@ -1171,6 +1172,7 @@ Baangi,bqx
 BengkalaSignLanguage,bqy
 Bakaka,bqz
 Braj,bra
+Brao,brb
 Lave,brb
 BerbiceCreoleDutch,brc
 Baraamu,brd
@@ -1589,6 +1591,7 @@ LalanaChinantec,cnl
 Con,cno
 NorthernPingChinese,cnp
 NorthernPinghua,cnp
+Chung,cnq
 Montenegrin,cnr
 CentralAsmat,cns
 TepetotutlaChinantec,cnt
@@ -1707,8 +1710,6 @@ ZacatepecChatino,ctz
 Cua,cua
 Cubeo,cub
 UsilaChinantec,cuc
-Chungmboko,cug
-Cung,cug
 Chuka,cuh
 Gichuka,cuh
 Cuiba,cui
@@ -1988,6 +1989,7 @@ DanishSignLanguage,dsl
 Dusner,dsn
 Desiya,dso
 Tadaksahak,dsq
+MardinSignLanguage,dsz
 Daur,dta
 LabukKinabatanganKadazan,dtb
 Ditidaht,dtd
@@ -2072,6 +2074,7 @@ Efe,efe
 Efik,efi
 Ega,ega
 Emilian,egl
+Benamanga,egm
 Eggon,ego
 EgyptianLanguages,egx
 EgyptianAncient,egy
@@ -2131,7 +2134,7 @@ Enga,enq
 Emumu,enr
 Emem,enr
 Enu,enu
-EnwanEduState,env
+EnwanEdoState,env
 EnwanAkwaIbomState,enw
 Enxet,enx
 BetiCôteDIvoire,eot
@@ -2214,6 +2217,7 @@ Pilipino,fil
 Fipa,fip
 Firan,fir
 TornedalenFinnish,fit
+Meänkieli,fit
 FinnoUgrianLanguages,fiu
 Fiwaga,fiw
 KiryaKonzəl,fkk
@@ -2505,6 +2509,7 @@ Gorontalo,gor
 Gronings,gos
 Gothic,got
 Gavar,gou
+Goo,gov
 Gorowa,gow
 Gobu,gox
 Goundo,goy
@@ -2933,6 +2938,7 @@ Imonda,imn
 Imbongu,imo
 Imroing,imr
 Marsian,ims
+Imotong,imt
 Milyan,imy
 Inga,inb
 IndicLanguages,inc
@@ -3824,7 +3830,6 @@ Langi,lag
 Lahnda,lah
 Lambya,lai
 LangoUganda,laj
-LakaNigeria,lak
 Lalia,lal
 Lamba,lam
 Laru,lan
@@ -3924,6 +3929,7 @@ Wala,lgl
 LegaMwenga,lgm
 TApo,lgn
 Opuuo,lgn
+LangoSouthSudan,lgo
 Logba,lgq
 Lengo,lgr
 Pahi,lgt
@@ -4041,7 +4047,6 @@ Leningitij,lnj
 SouthCentralBanda,lnl
 Langam,lnm
 Lorediakarkar,lnn
-LangoSouthSudan,lno
 Lamnso,lns
 Longuda,lnu
 Lanima,lnw
@@ -4076,6 +4081,7 @@ Lepki,lpe
 LongPhuriNaga,lpn
 Lipo,lpo
 Lopit,lpx
+Logir,lqr
 RaraBakati,lra
 NorthernLuri,lrc
 Laurentian,lre
@@ -4095,6 +4101,8 @@ Lemerig,lrz
 Lasgerdi,lsa
 BurundianSignLanguage,lsb
 LangueDesSignesBurundaise,lsb
+AlbarradasSignLanguage,lsc
+LenguaDeSeñasAlbarradas,lsc
 LishanaDeni,lsd
 Lusengo,lse
 Lish,lsh
@@ -4110,6 +4118,9 @@ Aruop,lsr
 Lasi,lss
 TrinidadAndTobagoSignLanguage,lst
 SiviaSignLanguage,lsv
+SeychellesSignLanguage,lsw
+LalangSinySeselwa,lsw
+LangueDesSignesSeychelloise,lsw
 MauritianSignLanguage,lsy
 LateMiddleChinese,ltc
 Latgalian,ltg
@@ -5273,6 +5284,7 @@ SouthwestTanna,nwi
 NyamusaMolo,nwm
 Nauo,nwo
 Nawaru,nwr
+Ndwewe,nww
 MiddleNewar,nwx
 NottowayMeherrin,nwy
 Nauete,nxa
@@ -5358,6 +5370,7 @@ Ogbronuagum,ogu
 OldHittite,oht
 OldHungarian,ohu
 Oirata,oia
+Okolie,oie
 InebuOne,oin
 NorthwesternOjibwa,ojb
 CentralOjibwa,ojc
@@ -5604,6 +5617,7 @@ Phudagi,phd
 Phuong,phg
 Phukha,phh
 PhilippineLanguages,phi
+Pahari,phj
 Phake,phk
 Phalura,phl
 Palula,phl
@@ -5624,7 +5638,6 @@ Piro,pie
 Pingelapese,pif
 Pisabo,pig
 PitcairnNorfolk,pih
-Pini,pii
 Pijao,pij
 Yom,pil
 Powhatan,pim
@@ -5787,6 +5800,7 @@ Parawen,prw
 Purik,prx
 ProvidenciaSignLanguage,prz
 AsueAwyu,psa
+IranianSignLanguage,psc
 PersianSignLanguage,psc
 PlainsIndianSignLanguage,psd
 CentralMalay,pse
@@ -5858,6 +5872,8 @@ LenguaDeSeñasDelParaguay,pys
 Puyuma,pyu
 PyuMyanmar,pyx
 Pyen,pyy
+Pazeh,pzh
+JejaraNaga,pzn
 ParaNaga,pzn
 Quapaw,qua
 HuallagaHuánucoQuechua,qub
@@ -5974,6 +5990,7 @@ Ringgou,rgu
 Rohingya,rhg
 Yahang,rhp
 RiangIndia,ria
+BribriSignLanguage,rib
 Tarifit,rif
 RiangLang,ril
 RiangMyanmar,ril
@@ -6017,6 +6034,7 @@ WelshRomani,rmw
 Romam,rmx
 VlaxRomani,rmy
 Marma,rmz
+BruncaSignLanguage,rnb
 Ruund,rnd
 Ronga,rng
 Ranglong,rnl
@@ -6044,8 +6062,11 @@ Ririo,rri
 Waima,rro
 Arritinngithigh,rrt
 RomanoSerbian,rsb
+Ruthenian,rsk
+Rusyn,rsk
 RussianSignLanguage,rsl
 MiriwoongSignLanguage,rsm
+RwandanSignLanguage,rsn
 RungtuChin,rtc
 Ratahan,rth
 Rotuman,rtm
@@ -6340,7 +6361,6 @@ MaYa,slz
 SouthernSami,sma
 Simbari,smb
 Som,smc
-Sama,smd
 Auwe,smf
 Simbali,smg
 Samei,smh
@@ -6361,7 +6381,6 @@ Sumbawa,smw
 Samba,smx
 Semnani,smy
 Simeku,smz
-Sebuyau,snb
 Sinaugoro,snc
 BauBidayuh,sne
 Noon,snf
@@ -6908,6 +6927,7 @@ TongaNyasa,tog
 Gitonga,toh
 TongaZambia,toi
 Tojolabal,toj
+TokiPona,tok
 Tolowa,tol
 Tombulu,tom
 XicotepecDeJuárezTotonac,too
@@ -6979,6 +6999,8 @@ ChicahuaxtlaTriqui,trs
 Tunggare,trt
 Turoyo,tru
 Surayt,tru
+Sediq,trv
+Seediq,trv
 Taroko,trv
 Torwali,trw
 TringgusSembaanBidayuh,trx
@@ -7156,6 +7178,7 @@ Ufim,ufi
 Ugaritic,uga
 KukuUgbanh,ugb
 Ughele,uge
+Kubachi,ugh
 UgandanSignLanguage,ugn
 Ugong,ugo
 UruguayanSignLanguage,ugy
@@ -7217,6 +7240,7 @@ Mundari,unr
 Unubahe,unu
 Munda,unx
 UndeKaili,unz
+Kulon,uon
 Umeda,upi
 UripivWalaRanoAtchin,upv
 Urarina,ura
@@ -7258,7 +7282,6 @@ AmbaSolomonIslands,utp
 Etulo,utr
 Utu,utu
 Urum,uum
-KulonPazeh,uun
 UraVanuatu,uur
 U,uuu
 WestUvean,uve
@@ -7418,6 +7441,7 @@ Wandji,wdd
 Wadaginam,wdg
 Wadjiginy,wdj
 Wadikali,wdk
+Wendat,wdt
 Wadjigu,wdu
 Wadjabangayi,wdy
 Wewaw,wea
@@ -7544,7 +7568,6 @@ Weyto,woy
 Maco,wpc
 Waluwarra,wrb
 Warluwara,wrb
-Warduji,wrd
 Warungu,wrg
 Gudjal,wrg
 Wiradjuri,wrh
@@ -7598,10 +7621,10 @@ Warrwa,wwr
 Wawa,www
 Waxianghua,wxa
 Wardandi,wxw
-Wyandot,wya
 WangaaybuwanNgiyambaa,wyb
 Woiwurrung,wyi
 Wymysorys,wym
+Wyandot,wyn
 Wayoró,wyr
 WesternFijian,wyy
 AndalusianArabic,xaa
@@ -7663,6 +7686,7 @@ Dacian,xdc
 Dharuk,xdk
 Edomite,xdm
 Kwandu,xdo
+Kaitag,xdq
 MalayicDayak,xdy
 Eblan,xeb
 Hdi,xed
@@ -7692,6 +7716,7 @@ Harami,xha
 Hunnic,xhc
 Hadrami,xhd
 Khetrani,xhe
+MiddleKhmer1400To1850CE,xhm
 Hernican,xhr
 Hattic,xht
 Hurrian,xhu
@@ -7715,6 +7740,7 @@ Khengkha,xkf
 Kagoro,xkg
 KenyanSignLanguage,xki
 Kajali,xkj
+Kachok,xkk
 Kaco,xkk
 MainstreamKenyah,xkl
 KayanRiverKayan,xkn
@@ -7766,6 +7792,7 @@ Kamu,xmu
 AntankaranaMalagasy,xmv
 TankaranaMalagasy,xmv
 TsimihetyMalagasy,xmw
+Salawati,xmx
 Maden,xmx
 Mayaguduna,xmy
 MoriBawah,xmz
@@ -8211,6 +8238,7 @@ Batui,zbt
 BuBauchiState,zbu
 WestBerawan,zbw
 CoatecasAltasZapotec,zca
+LasDeliciasZapotec,zcd
 CentralHongshuiheZhuang,zch
 NgazidjaComorian,zdj
 Zeeuws,zea
