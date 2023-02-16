@@ -1,7 +1,7 @@
 # Intl::LanguageTag
 
-> ###⚠︎ Warning ⚠︎ 
-> v0.11+ is *mostly* backwards compatible with v.0.10 and prior.  The following is not backwards compatible from v0.10-:**
+> ⚠︎ Warning ⚠︎  
+> **v0.11+ is *mostly* backwards compatible with v.0.10 and prior.  The following is not backwards compatible from v0.10-:**
 >  * Heavy extensions introspection (possible in v0.12, but via new API)
 >  * Grandfathered / legacy tags (possible in v0.12, but via new API)
 >  * Creation by means other than a `Str`
@@ -90,6 +90,9 @@ In likely order of completion:
   * More exhaustive test files
 
 ## Version history
+- 0.12.2 
+  - Fixed minor signature bug with `EmptyExtension` (found thanks to `Intl::Format::Number`'s `<u><nu>` usage)
+  - Updated to IANA subtag registry dated 2023-02-14 
 - 0.12.1
   - Fixed an issue with a potentially consumed sequence when accessing extensions
   - Updated to IANA subtag registry dated 2022-08-08
