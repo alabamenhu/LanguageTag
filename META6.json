@@ -1,7 +1,7 @@
 {
   "name": "Intl::LanguageTag",
   "description": "A module for working with BCP 47 language tags",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "perl": "6.*",
   "authors": [
     "Matthew Stephen Stuckwisch"
@@ -35,8 +35,8 @@
     "regions-deprecated",
     "scripts-deprecated",
     "enum/variants",
-    "enum/regions",
-    "enum/scripts"
+    "enum/scripts",
+    "enum/regions"
   ],
   "license": "Artistic-2.0",
   "source-url": "git://github.com/alabamenhu/LanguageTag.git",
