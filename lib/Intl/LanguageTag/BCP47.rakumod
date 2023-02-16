@@ -368,12 +368,12 @@ class LanguageTag::BCP47 {
             # This class functions as a sort of Nil,
             # but ensures ultimate stringification
             # always results in any empty string
-            method Str          { ''             }
-            method AT-KEY       { EmptyExtension }
-            method AT-POS       { EmptyExtension }
-            method EXISTS-KEY   { False          }
-            method EXISTS-POS   { False          }
-            method FALLBACK ($) { EmptyExtension }
+            method Str           { ''             }
+            method AT-KEY(|)     { EmptyExtension }
+            method AT-POS(|)     { EmptyExtension }
+            method EXISTS-KEY(|) { False          }
+            method EXISTS-POS(|) { False          }
+            method FALLBACK (|)  { EmptyExtension }
         }
 
         has Extension %!extensions is built;
