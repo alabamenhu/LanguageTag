@@ -408,7 +408,6 @@ AjaSouthSudan,aja
 AjaBenin,ajg
 Ajië,aji
 Andajin,ajn
-SouthLevantineArabic,ajp
 AlgerianJewishSignLanguage,ajs
 JudeoMoroccanArabic,aju
 Ajawa,ajw
@@ -536,7 +535,7 @@ Atorada,aox
 UabMeto,aoz
 ApacheLanguages,apa
 SaA,apb
-NorthLevantineArabic,apc
+LevantineArabic,apc
 SudaneseArabic,apd
 Bukiyip,ape
 PahananAgta,apf
@@ -1737,6 +1736,7 @@ Kwere,cwe
 Chewong,cwg
 CheqWong,cwg
 Kuwaataay,cwt
+ChaAri,cxh
 NopalaChatino,cya
 Cayubaba,cyb
 Cuyonon,cyo
@@ -1985,6 +1985,7 @@ LowerSorbian,dsb
 DutchSignLanguage,dse
 Daasanach,dsh
 Disa,dsi
+Dokshi,dsk
 DanishSignLanguage,dsl
 Dusner,dsn
 Desiya,dso
@@ -2049,10 +2050,12 @@ YandaDomDogon,dym
 Dyangadi,dyn
 Dhanggatti,dyn
 JolaFonyi,dyo
+Dyarim,dyr
 Dyula,dyu
 Djabugay,dyy
 Dyaabugay,dyy
 Tunzu,dza
+Daza,dzd
 Djiwarli,dze
 Dazaga,dzg
 Dzalakha,dzl
@@ -2174,6 +2177,7 @@ Etruscan,ett
 Ejagham,etu
 Eten,etx
 Semimi,etz
+Eudeve,eud
 BasqueFamily,euq
 Even,eve
 Uvbie,evh
@@ -2907,6 +2911,7 @@ Kalabari,ijn
 IjoLanguages,ijo
 SoutheastIjo,ijs
 EasternCanadianInuktitut,ike
+IkhinArokho,ikh
 Iko,iki
 Ika,ikk
 Ikulu,ikl
@@ -3017,6 +3022,7 @@ Iyayu,iya
 Mesaka,iyo
 YakaCongo,iyx
 Ingrian,izh
+Kizamani,izm
 Izere,izr
 Izii,izz
 Jamamadí,jaa
@@ -3323,7 +3329,6 @@ SelangorSignLanguage,kgi
 GamaleKham,kgj
 Kaiwá,kgk
 Kunggari,kgl
-Karipúna,kgm
 Karingani,kgn
 Krongo,kgo
 Kaingang,kgp
@@ -3605,7 +3610,7 @@ Kerek,krk
 Karelian,krl
 Sapo,krn
 KruLanguages,kro
-Korop,krp
+Durop,krp
 Krung,krr
 GbayaSudan,krs
 TumariKanuri,krt
@@ -3615,7 +3620,6 @@ WesternKrahn,krw
 Karon,krx
 Kryts,kry
 SotaKanum,krz
-ShuwaZamani,ksa
 Shambala,ksb
 SouthernKalinga,ksc
 Kuanua,ksd
@@ -3826,7 +3830,7 @@ Lacandon,lac
 Ladino,lad
 Pattani,lae
 Lafofa,laf
-Langi,lag
+Rangi,lag
 Lahnda,lah
 Lambya,lai
 LangoUganda,laj
@@ -3932,6 +3936,8 @@ Opuuo,lgn
 LangoSouthSudan,lgo
 Logba,lgq
 Lengo,lgr
+GuineaBissauSignLanguage,lgs
+LínguaGestualGuineense,lgs
 Pahi,lgt
 Longgu,lgu
 Ligenza,lgz
@@ -4057,6 +4063,7 @@ Inonhan,loc
 Saluan,loe
 Logol,lof
 Logo,log
+Laarim,loh
 Narim,loh
 LomaCôteDIvoire,loi
 Lou,loj
@@ -4159,6 +4166,7 @@ SouthernLuri,luz
 MakuA,lva
 Lavi,lvi
 Lavukaleve,lvk
+Lwel,lvl
 StandardLatvian,lvs
 Levuka,lvu
 Lwalu,lwa
@@ -5149,7 +5157,6 @@ Noiri,noi
 Nonuya,noj
 Nooksack,nok
 Nomlaki,nol
-Nocamán,nom
 OldNorse,non
 Numanggang,nop
 Ngongo,noq
@@ -5333,6 +5340,7 @@ Nzadi,nzd
 Nzima,nzi
 Nzakara,nzk
 ZemeNaga,nzm
+DirNyamzakMbarimi,nzr
 NewZealandSignLanguage,nzs
 TekeNzikou,nzu
 Nzakambay,nzy
@@ -5677,7 +5685,6 @@ PaluE,ple
 CentralMalayoPolynesianLanguages,plf
 Pilagá,plg
 Paulohi,plh
-Polci,plj
 KohistaniShina,plk
 ShwePalaung,pll
 Palenquero,pln
@@ -5700,7 +5707,6 @@ Pamona,pmf
 MāhārāṣṭriPrākrit,pmh
 NorthernPumi,pmi
 SouthernPumi,pmj
-Pamlico,pmk
 LinguaFranca,pml
 Pomo,pmm
 Pam,pmn
@@ -5790,7 +5796,6 @@ Kibiri,prm
 Prasuni,prn
 OldProvençal,pro
 OldOccitan,pro
-Parsi,prp
 AshéninkaPerené,prq
 Puri,prr
 Dari,prs
@@ -5873,6 +5878,7 @@ LenguaDeSeñasDelParaguay,pys
 Puyuma,pyu
 PyuMyanmar,pyx
 Pyen,pyy
+Pesse,pze
 Pazeh,pzh
 JejaraNaga,pzn
 ParaNaga,pzn
@@ -6064,10 +6070,11 @@ Waima,rro
 Arritinngithigh,rrt
 RomanoSerbian,rsb
 Ruthenian,rsk
-Rusyn,rsk
+Rusnak,rsk
 RussianSignLanguage,rsl
 MiriwoongSignLanguage,rsm
 RwandanSignLanguage,rsn
+Rishiwa,rsw
 RungtuChin,rtc
 Ratahan,rth
 Rotuman,rtm
@@ -6350,7 +6357,6 @@ SaltYui,sll
 PangutaranSama,slm
 Salinan,sln
 Lamaholot,slp
-Salchuq,slq
 Salar,slr
 SingaporeSignLanguage,sls
 Sila,slt
@@ -6616,7 +6622,6 @@ AlSayyidBedouinSignLanguage,syy
 Semelai,sza
 Ngalum,szb
 SemaqBeri,szc
-Seru,szd
 Seze,sze
 Sengele,szg
 Silesian,szl
@@ -6883,7 +6888,6 @@ Ternateño,tmg
 Tamashek,tmh
 Tutuba,tmi
 Samarokena,tmj
-NorthwesternTamang,tmk
 TamnimCitak,tml
 TaiThanh,tmm
 TamanIndonesia,tmn
@@ -6962,7 +6966,6 @@ Tuparí,tpr
 TlachichilcoTepehua,tpt
 Tampuan,tpu
 Tanapag,tpv
-Tupí,tpw
 AcatepecMePhaa,tpx
 AcatepecTlapanec,tpx
 Trumai,tpy
@@ -7083,6 +7086,7 @@ Turka,tuz
 Vaghua,tva
 Tsuvadi,tvd
 TeUn,tve
+Tulai,tvi
 SoutheastAmbrym,tvk
 Tuvalu,tvl
 TelaMasbuar,tvm
@@ -7215,6 +7219,7 @@ Ulumanda,ulm
 Unserdeutsch,uln
 UmaLung,ulu
 Ulwa,ulw
+Buli,uly
 Umatilla,uma
 Umbundu,umb
 Marrucinian,umc
@@ -7333,6 +7338,7 @@ Vinza,vin
 Vishavan,vis
 Viti,vit
 Iduna,viv
+Bajjika,vjk
 Kariyarra,vka
 Kujarge,vkj
 Kaur,vkk
@@ -7534,7 +7540,7 @@ Wambon,wms
 Walmajarri,wmt
 Mwani,wmw
 Womo,wmx
-Wanambre,wnb
+Mokati,wnb
 Wantoat,wnc
 Wandarang,wnd
 Waneci,wne
@@ -7595,6 +7601,7 @@ Owenia,wsr
 Wasa,wss
 Wasu,wsu
 WotapuriKatarqalai,wsv
+Matambwe,wtb
 Watiwa,wtf
 Wathawurrung,wth
 Berta,wti
@@ -7888,7 +7895,6 @@ Solano,xso
 Silopi,xsp
 MakhuwaSaka,xsq
 Sherpa,xsr
-Assan,xss
 Sanumá,xsu
 Sudovian,xsv
 Saisiyat,xsy
@@ -8004,6 +8010,7 @@ Chesu,ych
 Lolopo,ycl
 Yucuna,ycn
 Chepya,ycp
+YilanCreole,ycr
 Yanda,yda
 EasternYiddish,ydd
 YangumDey,yde
@@ -8056,6 +8063,7 @@ AxiYi,yix
 Azhe,yiz
 Yakan,yka
 NorthernYukaghir,ykg
+KhamniganMongol,ykh
 Yoke,yki
 Yakaikeke,ykk
 Khlula,ykl
@@ -8245,6 +8253,7 @@ NgazidjaComorian,zdj
 Zeeuws,zea
 Zenag,zeg
 EasternHongshuiheZhuang,zeh
+Zeem,zem
 Zenaga,zen
 Kinga,zga
 GuibeiZhuang,zgb
@@ -8267,7 +8276,6 @@ Zinza,zin
 Zigula,ziw
 Zizilivakan,ziz
 Kaimbulawa,zka
-Koibal,zkb
 Kadu,zkd
 Koguryo,zkg
 Khorezmian,zkh
@@ -8287,6 +8295,7 @@ Malay,zlm
 LianshanZhuang,zln
 LiuqianZhuang,zlq
 SouthSlavicLanguages,zls
+Zul,zlu
 WestSlavicLanguages,zlw
 MandaAustralia,zma
 Zimba,zmb
@@ -8379,7 +8388,6 @@ TejalapanZapotec,ztt
 GüiláZapotec,ztu
 ZaachilaZapotec,ztx
 YateeZapotec,zty
-Zeem,zua
 Tokano,zuh
 Kumzari,zum
 Zuni,zun

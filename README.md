@@ -90,6 +90,8 @@ In likely order of completion:
   * More exhaustive test files
 
 ## Version history
+- 0.12.3
+  - Updated to IANA subtag registry dated 2023-03-22
 - 0.12.2 
   - Fixed minor signature bug with `EmptyExtension` (found thanks to `Intl::Format::Number`'s `<u><nu>` usage)
   - Updated to IANA subtag registry dated 2023-02-14 
