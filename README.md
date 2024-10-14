@@ -1,15 +1,5 @@
 # Intl::LanguageTag
 
-> ⚠︎ Warning ⚠︎  
-> **v0.11+ is *mostly* backwards compatible with v.0.10 and prior.  The following is not backwards compatible from v0.10-:**
->  * Heavy extensions introspection (possible in v0.12, but via new API)
->  * Grandfathered / legacy tags (possible in v0.12, but via new API)
->  * Creation by means other than a `Str`
->  * Enums
->  * `LanguageTagFilter` objects
-  
-Support for all will be addressed in forthcoming updates.
-
 ## Usage
 
 ```raku
@@ -80,7 +70,9 @@ If the names of these functions is too verbose, you can alias them easily by doi
 ## Usage notes
 
 Major architectural changes were made between v0.10 and v0.11.  Some functionality is not backwards compatible, 
-however, I am not aware of any module making use of those previous features. 
+however, I am not aware of any module making use of those previous features.  The changes include
+how introspection and grandfathered tags work, removal of creation by anything other than a string, removal of enums,
+removal of `LanguageTagFilter` objects.
 
 ## Todo
 
