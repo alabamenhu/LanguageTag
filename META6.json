@@ -1,7 +1,7 @@
 {
   "name": "Intl::LanguageTag",
   "description": "A module for working with BCP 47 language tags",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "perl": "6.*",
   "authors": [
     "Matthew Stephen Stuckwisch"

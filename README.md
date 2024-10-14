@@ -77,6 +77,11 @@ They are the following:
  
 If the names of these functions is too verbose, you can alias them easily by doing `my &filter = filter-language-tags`.
 
+## Usage notes
+
+Major architectural changes were made between v0.10 and v0.11.  Some functionality is not backwards compatible, 
+however, I am not aware of any module making use of those previous features. 
+
 ## Todo
 
 In likely order of completion:
@@ -90,6 +95,8 @@ In likely order of completion:
   * More exhaustive test files
 
 ## Version history
+- 0.12.4
+  - Updated to IANA subtag registry dated 2024-06-14
 - 0.12.3
   - Updated to IANA subtag registry dated 2023-03-22
 - 0.12.2 

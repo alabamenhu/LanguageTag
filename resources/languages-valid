@@ -1522,6 +1522,7 @@ clk
 cll
 clm
 clo
+cls
 clt
 clu
 clw
@@ -2906,6 +2907,7 @@ iso
 isr
 ist
 isu
+isv
 itb
 itc
 itd
@@ -6464,6 +6466,7 @@ row
 rpn
 rpt
 rri
+rrm
 rro
 rrt
 rsb
@@ -7777,6 +7780,7 @@ vrs
 vrt
 vsi
 vsl
+vsn
 vsv
 vto
 vum

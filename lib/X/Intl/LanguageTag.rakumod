@@ -4,7 +4,7 @@
 unit module LanguageTag;
 
 # Defined as such so that CATCH can go more or less general
-# TODO: Redefine as subclass of X::Intl so that International issues can be generalized
+# TODO: Redefine as implementing the role X::Intl so that International issues can be generalized
 role X::Intl::LanguageTag { }
 
 

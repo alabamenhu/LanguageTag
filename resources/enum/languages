@@ -1562,6 +1562,7 @@ IduMishmi,clk
 Chala,cll
 Clallam,clm
 LowlandOaxacaChontal,clo
+ClassicalSanskrit,cls
 LautuChin,clt
 Caluyanun,clu
 Chulym,clw
@@ -1830,6 +1831,7 @@ Andaandi,dgl
 Dongolawi,dgl
 Dagoman,dgn
 Dogri,dgo
+Tlicho,dgr
 Dogrib,dgr
 Tłı̨chǫ,dgr
 Dogoso,dgs
@@ -2992,6 +2994,7 @@ Isoko,iso
 IsraeliSignLanguage,isr
 Istriot,ist
 IsuMenchumDivision,isu
+Interslavic,isv
 BinonganItneg,itb
 ItalicLanguages,itc
 SouthernTidung,itd
@@ -6066,6 +6069,7 @@ DelaOenale,row
 Repanbitip,rpn
 Rapting,rpt
 Ririo,rri
+Moriori,rrm
 Waima,rro
 Arritinngithigh,rrt
 RomanoSerbian,rsb
@@ -7389,6 +7393,7 @@ Burmbar,vrt
 BanamBay,vrt
 MoldovaSignLanguage,vsi
 VenezuelanSignLanguage,vsl
+VedicSanskrit,vsn
 ValencianSignLanguage,vsv
 LlenguaDeSignesValenciana,vsv
 Vitou,vto
