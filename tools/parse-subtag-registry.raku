@@ -43,17 +43,21 @@ First we have a few constants:
 =end pod
 
 constant clear-line = "\x001b[2K";
-
-sub MAIN (Bool :$update = False) {
-    use LibCurl::Easy;
+constant registry-URL = 'https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry';
+sub MAIN (Bool :$update = False, :$wget = False) {
     if !($*PROGRAM.sibling("language-subtag-registry").IO.e)
     || $update {
         print "{ $update ?? "Updating" !! "Downloading"} IANA subtag registry (~700kB)... ";
-        LibCurl::Easy.new(
-            URL => 'https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry',
-            download => $*PROGRAM.sibling('language-subtag-registry').Str,
-            useragent => 'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0'
-        ).perform;
+        if $wget {
+            run 'wget', '--quiet', '-O', $*PROGRAM.sibling('language-subtag-registry').Str, registry-URL, :out;
+        } else {
+            use LibCurl::Easy;
+            LibCurl::Easy.new(
+                URL => registry-URL,
+                download => $*PROGRAM.sibling('language-subtag-registry').Str,
+                useragent => 'Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0'
+            ).perform;
+        }
         say  "OK";
     }
 
