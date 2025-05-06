@@ -1154,6 +1154,7 @@ Baima,bqh
 Bakhtiari,bqi
 Bandial,bqj
 BandaMbrès,bqk
+Karian,bql
 Bilakura,bql
 Wumboko,bqm
 BulgarianSignLanguage,bqn
@@ -1767,6 +1768,7 @@ Dawida,dav
 Davawenyo,daw
 Dayi,dax
 LandDayakLanguages,day
+MoiWadea,daz
 Dao,daz
 Bangime,dba
 Deno,dbb
@@ -1808,7 +1810,6 @@ Dezfuli,def
 Degema,deg
 Dehwari,deh
 Demisa,dei
-Dek,dek
 Delaware,del
 Dem,dem
 SlaveAthapascan,den
@@ -2762,6 +2763,7 @@ Hani,hni
 HmongNjua,hnj
 MongLeng,hnj
 MongNjua,hnj
+Hainanese,hnm
 Hanunoo,hnn
 NorthernHindko,hno
 CaribbeanHindustani,hns
@@ -4147,6 +4149,7 @@ Aringa,luc
 Ludian,lud
 Luvale,lue
 Laua,luf
+LeizhouChinese,luh
 Luiseno,lui
 Luna,luj
 Lunanakha,luk
@@ -4500,6 +4503,8 @@ Mae,mme
 Mundat,mmf
 NorthAmbrym,mmg
 Mehináku,mmh
+HemberAvu,mmi
+Amben,mmi
 Musar,mmi
 Majhwar,mmj
 MukhaDora,mmk
@@ -5240,7 +5245,6 @@ Nsongo,nsx
 Nasal,nsy
 Nisenan,nsz
 NorthernTidung,ntd
-Nathembo,nte
 Ngantangarra,ntg
 Natioro,nti
 Ngaanyatjarra,ntj
@@ -6308,6 +6312,7 @@ Sivandi,siy
 Siwi,siz
 Epena,sja
 SajauBasap,sjb
+ShaojiangChinese,sjc
 KildinSami,sjd
 PiteSami,sje
 Assangori,sjg
@@ -8112,6 +8117,7 @@ Mysian,yms
 NorthernMuji,ymx
 Muzi,ymz
 Aluo,yna
+Yamben,ynb
 Yandruwandha,ynd
 LangE,yne
 Yango,yng

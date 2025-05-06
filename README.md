@@ -87,6 +87,8 @@ In likely order of completion:
   * More exhaustive test files
 
 ## Version history
+- 0.12.5
+  - Updated to IANA subtag registry dated 2025-03-10
 - 0.12.4
   - Updated to IANA subtag registry dated 2024-06-14
 - 0.12.3

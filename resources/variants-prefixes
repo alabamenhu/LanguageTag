@@ -88,6 +88,8 @@ grital
 oc,oc-cisaup,oc-nicard,oc-provenc
 grmistr
 oc,oc-aranes,oc-auvern,oc-cisaup,oc-creiss,oc-gascon,oc-lemosin,oc-lengadoc,oc-nicard,oc-provenc,oc-vivaraup
+hanoi
+vi
 hepburn
 ja-Latn
 heploc
@@ -96,6 +98,8 @@ hognorsk
 nn
 hsistemo
 eo
+huett
+vi
 ijekavsk
 sr,sr-Latn,sr-Cyrl
 itihasa
@@ -108,12 +112,16 @@ jyutping
 yue
 kkcor
 kw
+kleinsch
+kl,kl-tunumiit
 kociewie
 pl
 kscor
 kw
 laukika
 sa
+leidentr
+egy
 lemosin
 oc
 lengadoc
@@ -126,6 +134,10 @@ ltg2007
 ltg
 luna1918
 ru
+mdcegyp
+egy
+mdctrans
+egy
 metelko
 sl
 monoton
@@ -174,6 +186,8 @@ rozaj
 sl
 rumgr
 rm
+saigon
+vi
 scotland
 en
 scouse
