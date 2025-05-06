@@ -74,8 +74,6 @@ class LanguageTag::BCP47 {
         my $extensions  = Extensions.new: @list, $offset, $language, $script, $region;
         my $private-use = PrivateUse.new: @list, $offset;
 
-        # Data clean up
-        #
         # Script should *always* be defined for introspection by internationalization
         # frameworks -- we'll remove it during stringification if it can be implied.
         $script = Script.new: $language.default-script if $script eq '';
@@ -207,7 +205,7 @@ class LanguageTag::BCP47 {
         my %deprecated     := BEGIN %?RESOURCES<scripts-deprecated>.lines.Set;
 
         #| A well-formed script consists of four alphanumeric characters
-        method well-formed ( --> Bool ) { so $!code ~~ /<[a..zA..Z0..9]> ** 4/ }
+        method well-formed ( --> Bool ) { so $!code ~~ /^<[a..zA..Z0..9]> ** 4$/ }
 
         #| A valid script is found in the IANA registry
         method valid ( --> Bool ) { %valid{$!code}:exists }
@@ -221,6 +219,7 @@ class LanguageTag::BCP47 {
         has $!code is built;
         method WHICH { ValueObjAt.new: "Intl::LanguageTag::Region|" ~ $!code }
 
+        proto method new { * }
         multi method new (Str $code --> ::?CLASS:D) { self.bless: code => $code.uc }
         multi method new (@subtags is raw, $offset is rw --> ::?CLASS:D) is implementation-detail {
             self.bless:
@@ -557,7 +556,7 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
         my $tag = $!origin.Str.lc; # canonically lowercase in the -t- extension
 
         $tag ~= '-'
-            if  %!fields  > 2                              # Guaranteed at least one is not private use
+            if  %!fields  > 2                             # Guaranteed at least one is not private use
             || (%!fields == 1 && (%!fields<x0>:!exists)); # If only one, check whether it's x0
 
         $tag ~= %!fields.pairs.grep(*.key ne 'x0').sort(*.key).map({.key ~ '-' ~ .value}).join("-");
@@ -623,7 +622,7 @@ class TransformedContent is LanguageTag::BCP47::Extension does Associative {
 
 # Ensure the extensions and shortcuts are registered.
 # This code needn't be quite this verbose, but we should probably avoid
-# having so too many shortcuts.  Just because we *can* offer a shortcut
+# having too many shortcuts.  Just because we *can* offer a shortcut
 # to drill down three levels into an extension doesn't mean we should.
 # If the next few lines gets too big to fit on a screen, think twice.
 LanguageTag::BCP47::Extension.REGISTER-EXTENSION: 't', TransformedContent;
@@ -695,10 +694,6 @@ sub filter-language-tags-extended(
         take $source-tag if $source-tag ~~ filter
     }
 }
-
-
-
-#my \english = LanguageTag::BCP47.new('en');
 
 #| Implements RFC4647 § 3.4 Lookup
 sub lookup-language-tags(
