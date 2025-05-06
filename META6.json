@@ -1,44 +1,43 @@
 {
-  "name": "Intl::LanguageTag",
-  "description": "A module for working with BCP 47 language tags",
-  "version": "0.12.4",
-  "perl": "6.*",
-  "authors": [
-    "Matthew Stephen Stuckwisch"
-  ],
-  "auth": "zef:guifa",
-  "depends": [
-    "Intl::LanguageTaggish"
-  ],
-  "build-depends": [],
-  "test-depends": [
-    "Test"
-  ],
-  "provides": {
-    "Intl::LanguageTag": "lib/Intl/LanguageTag.rakumod",
-    "Intl::LanguageTag::BCP47": "lib/Intl/LanguageTag/BCP47.rakumod"
-  },
-  "resources": [
-    "languages-preferred",
-    "languages-deprecated",
-    "languages-macro",
-    "languages-valid",
-    "languages-script",
-    "variants-valid",
-    "variants-prefixes",
-    "regions-valid",
-    "scripts-valid",
-    "languages-extended",
-    "variants-deprecated",
-    "enum/languages",
-    "regions-preferred",
-    "regions-deprecated",
-    "scripts-deprecated",
-    "enum/variants",
-    "enum/scripts",
-    "enum/regions"
-  ],
-  "license": "Artistic-2.0",
-  "source-url": "git://github.com/alabamenhu/LanguageTag.git",
-  "raku": "6.*"
+    "name": "Intl::LanguageTag",
+    "description": "A module for working with BCP 47 language tags",
+    "version": "0.12.5",
+    "raku": "6.*",
+    "authors": [
+        "Matthew Stephen Stuckwisch"
+    ],
+    "auth": "zef:guifa",
+    "depends": [
+        "Intl::LanguageTaggish"
+    ],
+    "build-depends": [],
+    "test-depends": [
+        "Test"
+    ],
+    "provides": {
+        "Intl::LanguageTag": "lib/Intl/LanguageTag.rakumod",
+        "Intl::LanguageTag::BCP47": "lib/Intl/LanguageTag/BCP47.rakumod"
+    },
+    "resources": [
+        "languages-preferred",
+        "languages-deprecated",
+        "languages-macro",
+        "languages-valid",
+        "languages-script",
+        "variants-valid",
+        "variants-prefixes",
+        "regions-valid",
+        "scripts-valid",
+        "languages-extended",
+        "variants-deprecated",
+        "enum/languages",
+        "regions-preferred",
+        "regions-deprecated",
+        "scripts-deprecated",
+        "enum/variants",
+        "enum/scripts",
+        "enum/regions"
+    ],
+    "license": "Artistic-2.0",
+    "source-url": "git://github.com/alabamenhu/LanguageTag.git"
 }
